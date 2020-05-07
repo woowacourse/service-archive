@@ -23,7 +23,7 @@ class SlackRepository {
         return retrieveAnswers(history, token, channel)
     }
 
-    private fun retrieveAnswers(history: History, token: String, channel: String): Qnas {
+    fun retrieveAnswers(history: History, token: String, channel: String): Qnas {
         val qnas = Qnas()
         history.messages.forEach {
             qnas.add(it, request(UrlFormatter.make("conversations.replies", token, channel, it.ts)))
@@ -31,7 +31,7 @@ class SlackRepository {
         return qnas
     }
 
-    private fun request(url: String): History {
+    fun request(url: String): History {
         val headers = HttpHeaders()
         headers.contentType = MediaType.APPLICATION_FORM_URLENCODED
         val body = slackRest.request(HttpMethod.GET, url, null, headers).body
