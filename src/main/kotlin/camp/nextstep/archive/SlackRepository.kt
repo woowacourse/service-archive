@@ -1,5 +1,7 @@
 package camp.nextstep.archive
 
+import ch.qos.logback.core.CoreConstants.EMPTY_STRING
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import mu.KotlinLogging
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.*
@@ -17,13 +19,33 @@ class SlackRepository {
     lateinit var slackRest: SlackRest
 
     fun retrieve(token: String, channel: String): Any {
+        val history = request(UrlFormatter.make("conversations.history", token, channel))
+        return retrieveAnswers(history, token, channel)
+    }
+
+    private fun retrieveAnswers(history: History, token: String, channel: String): Qnas {
+        val qnas = Qnas()
+        history.messages.forEach {
+            qnas.add(it, request(UrlFormatter.make("conversations.replies", token, channel, it.ts)))
+        }
+        return qnas
+    }
+
+    private fun request(url: String): History {
         val headers = HttpHeaders()
         headers.contentType = MediaType.APPLICATION_FORM_URLENCODED
-        return slackRest.request(
-                HttpMethod.GET,
-                "",
-                null,
-                headers)
+        val body = slackRest.request(HttpMethod.GET, url, null, headers).body
+        return jacksonObjectMapper().readValue(body, History::class.java)
+
+    }
+}
+
+object UrlFormatter {
+    fun make(api: String, token: String, channel: String, ts: String = EMPTY_STRING): String {
+        if (ts.isNullOrBlank()) {
+            return "https://slack.com/api/${api}?token=${token}&channel=${channel}"
+        }
+        return "https://slack.com/api/${api}?token=${token}&channel=${channel}&ts=${ts}"
     }
 }
 
