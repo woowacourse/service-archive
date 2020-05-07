@@ -1,4 +1,4 @@
-package camp.nextstep.archive
+package camp.nextstep
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication

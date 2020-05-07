@@ -1,4 +1,4 @@
-package camp.nextstep.archive.slack
+package camp.nextstep.slack
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
@@ -35,8 +35,9 @@ data class Conversations(
             conversations.add(Conversation(message.text, message.user, message.ts, history))
         }
     }
-}
 
+    fun exist(): Boolean = conversations.isNotEmpty()
+}
 
 data class Conversation(
         val message: String,

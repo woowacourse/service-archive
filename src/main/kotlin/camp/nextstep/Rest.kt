@@ -1,4 +1,4 @@
-package camp.nextstep.archive
+package camp.nextstep
 
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod

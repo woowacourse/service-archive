@@ -1,7 +1,7 @@
-package camp.nextstep.archive.slack
+package camp.nextstep.slack
 
-import camp.nextstep.archive.Rest
-import camp.nextstep.archive.slack.DataMapper.read
+import camp.nextstep.Rest
+import camp.nextstep.slack.DataMapper.read
 import ch.qos.logback.core.CoreConstants.EMPTY_STRING
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
@@ -21,7 +21,7 @@ class SlackRepository {
     @Autowired
     lateinit var slackRest: SlackRest
 
-    fun retrieve(token: String, channel: String): Any {
+    fun retrieve(token: String, channel: String): Conversations {
         val history = request(UrlFormatter.make("conversations.history", token, channel))
         return retrieveAnswers(history, token, channel)
     }

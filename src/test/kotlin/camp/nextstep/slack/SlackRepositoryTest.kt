@@ -1,4 +1,4 @@
-package camp.nextstep.archive.slack
+package camp.nextstep.slack
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -18,7 +18,7 @@ class SlackRepositoryTest {
     fun `Slack 특정 채널의 히스토리를 조회한다`() {
         val response = slackRepository.request(UrlFormatter.make("conversations.history", token, channel))
 
-        assertThat(response).isNotNull
+        assertThat(response.exist()).isTrue()
     }
 
     @Test
@@ -26,13 +26,13 @@ class SlackRepositoryTest {
         val history = slackRepository.request(UrlFormatter.make("conversations.history", token, channel))
         val answers = slackRepository.request(UrlFormatter.make("conversations.replies", token, channel, history.messages[0].ts))
 
-        assertThat(answers).isNotNull
+        assertThat(answers.exist()).isTrue()
     }
 
     @Test
     fun `Slack 특정 채널의 히스토리(Thread 포함)를 조회한다`() {
         val response = slackRepository.retrieve(token, channel)
 
-        assertThat(response).isNotNull
+        assertThat(response.exist()).isTrue()
     }
 }
