@@ -1,6 +1,7 @@
-package camp.nextstep.archive
+package camp.nextstep.archive.slack
 
-import camp.nextstep.archive.DataMapper.read
+import camp.nextstep.archive.Rest
+import camp.nextstep.archive.slack.DataMapper.read
 import ch.qos.logback.core.CoreConstants.EMPTY_STRING
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
@@ -25,12 +26,12 @@ class SlackRepository {
         return retrieveAnswers(history, token, channel)
     }
 
-    fun retrieveAnswers(history: History, token: String, channel: String): Qnas {
-        val qnas = Qnas()
+    fun retrieveAnswers(history: History, token: String, channel: String): Conversations {
+        val conversations = Conversations()
         history.messages.forEach {
-            qnas.add(it, request(UrlFormatter.make("conversations.replies", token, channel, it.ts)))
+            conversations.add(it, request(UrlFormatter.make("conversations.replies", token, channel, it.ts)))
         }
-        return qnas
+        return conversations
     }
 
     fun request(url: String): History {

@@ -17,8 +17,12 @@ repositories {
 }
 
 dependencies {
+	// Spring
 	implementation("org.springframework.boot:spring-boot-starter")
 	implementation("org.springframework.boot:spring-boot-starter-web")
+	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+
+	// Kotlin
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 	implementation("io.github.microutils:kotlin-logging:1.5.4")
@@ -30,6 +34,11 @@ dependencies {
 		exclude(group = "junit")
 	}
 	testImplementation("org.assertj:assertj-core:3.12.2")
+
+	// Databases
+	implementation("org.hibernate:hibernate-java8")
+	runtimeOnly("com.h2database:h2")
+	runtimeOnly("mysql:mysql-connector-java:8.0.17")
 }
 
 tasks.withType<Test> {

@@ -1,4 +1,4 @@
-package camp.nextstep.archive
+package camp.nextstep.archive.slack
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
@@ -27,20 +27,20 @@ data class Message(
     }
 }
 
-data class Qnas(
-        val qnas: MutableList<Qna> = mutableListOf()
+data class Conversations(
+        val conversations: MutableList<Conversation> = mutableListOf()
 ) {
-    fun add(question: Message, answers: History) {
-        if (answers.exist()) {
-            qnas.add(Qna(question.text, question.user, question.ts, answers))
+    fun add(message: Message, history: History) {
+        if (history.exist()) {
+            conversations.add(Conversation(message.text, message.user, message.ts, history))
         }
     }
 }
 
 
-data class Qna(
-        val question: String,
+data class Conversation(
+        val message: String,
         val user: String,
         val ts: String,
-        val answer: History
+        val thread: History
 )
