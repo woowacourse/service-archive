@@ -17,6 +17,7 @@ class SlackRepositoryTest {
     @Test
     fun `Slack 특정 채널의 히스토리를 조회한다`() {
         val response = slackRepository.request(UrlFormatter.make("conversations.history", token, channel))
+
         assertThat(response).isNotNull
     }
 
@@ -26,5 +27,12 @@ class SlackRepositoryTest {
         val answers = slackRepository.request(UrlFormatter.make("conversations.replies", token, channel, history.messages[0].ts))
 
         assertThat(answers).isNotNull
+    }
+
+    @Test
+    fun `Slack 특정 채널의 히스토리(Thread 포함)를 조회한다`() {
+        val response = slackRepository.retrieve(token, channel)
+
+        assertThat(response).isNotNull
     }
 }

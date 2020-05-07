@@ -1,6 +1,8 @@
 package camp.nextstep.archive
 
+import camp.nextstep.archive.DataMapper.read
 import ch.qos.logback.core.CoreConstants.EMPTY_STRING
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import mu.KotlinLogging
 import org.springframework.beans.factory.annotation.Autowired
@@ -34,19 +36,24 @@ class SlackRepository {
     fun request(url: String): History {
         val headers = HttpHeaders()
         headers.contentType = MediaType.APPLICATION_FORM_URLENCODED
-        val body = slackRest.request(HttpMethod.GET, url, null, headers).body
-        return jacksonObjectMapper().readValue(body, History::class.java)
-
+        return read(slackRest.request(HttpMethod.GET, url, null, headers).body)
     }
 }
 
 object UrlFormatter {
     fun make(api: String, token: String, channel: String, ts: String = EMPTY_STRING): String {
+        val url = "https://slack.com/api/${api}?token=${token}&channel=${channel}"
         if (ts.isNullOrBlank()) {
-            return "https://slack.com/api/${api}?token=${token}&channel=${channel}"
+            return url
         }
-        return "https://slack.com/api/${api}?token=${token}&channel=${channel}&ts=${ts}"
+        return "${url}&ts=${ts}"
     }
+}
+
+object DataMapper {
+    private val mapper: ObjectMapper = jacksonObjectMapper()
+
+    fun read(body: String?): History = mapper.readValue(body, History::class.java)
 }
 
 @Component
