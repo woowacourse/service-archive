@@ -23,7 +23,7 @@ data class Message(
         val ts: String
 ) {
     override fun toString(): String {
-        return "$text\n"
+        return "user: $user, text: $text\n"
     }
 }
 

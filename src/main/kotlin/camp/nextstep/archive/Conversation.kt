@@ -26,11 +26,30 @@ class Conversation(
 
         val userId: String,
 
+        val conversationTime: LocalDateTime,
+
+        @OneToMany(mappedBy = "conversation", cascade = [CascadeType.MERGE])
+        val replies: MutableList<Reply> = mutableListOf(),
+
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         val id: Long = 0
 ) : BaseAuditEntity() {
-    override fun toString(): String {
-        return "Conversation(message='$message', userId='$userId', id=$id)"
+    fun add(reply: Reply) {
+        replies.add(reply)
     }
 }
+
+@Entity
+class Reply(
+        @ManyToOne
+        @JoinColumn(foreignKey = ForeignKey(name = "fk_reply_conversation"))
+        val conversation: Conversation,
+        val message: String,
+        val userId: String,
+        val replyTime: LocalDateTime,
+
+        @Id
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
+        val id: Long = 0
+) : BaseAuditEntity()
