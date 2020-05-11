@@ -35,4 +35,13 @@ class SlackRepositoryTest {
 
         assertThat(response.exist()).isTrue()
     }
+
+    @Test
+    fun `Slack Timestamp to LocalDateTime`() {
+        val timeStamp = "1589190185.365000"
+        val expected = "2020-05-11T18:43:05.365"
+        val actual = DateTimeConverter.toLocalDateTime(timeStamp)
+
+        assertThat(actual).isEqualTo(expected)
+    }
 }

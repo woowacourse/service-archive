@@ -12,6 +12,8 @@ import org.springframework.stereotype.Component
 import org.springframework.stereotype.Service
 import org.springframework.util.MultiValueMap
 import org.springframework.web.client.RestTemplate
+import java.sql.Timestamp
+import java.time.LocalDateTime
 
 private val logger = KotlinLogging.logger { }
 
@@ -39,6 +41,18 @@ class SlackRepository {
         headers.contentType = MediaType.APPLICATION_FORM_URLENCODED
         return read(slackRest.request(HttpMethod.GET, url, null, headers).body)
     }
+}
+
+object DateTimeConverter {
+    private const val UNNECESSARY_CHAR: String = "."
+    private const val SLACK_TIMESTAMP_LENGTH = 13
+
+    fun toLocalDateTime(timestamp: String): LocalDateTime = Timestamp(convert(timestamp)).toLocalDateTime()
+
+    private fun convert(timestamp: String): Long =
+            timestamp
+                    .replace(UNNECESSARY_CHAR, "")
+                    .substring(0, SLACK_TIMESTAMP_LENGTH).toLong()
 }
 
 object UrlFormatter {
