@@ -5,7 +5,9 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.test.context.ActiveProfiles
 
+@ActiveProfiles("test")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class SlackRepositoryTest {
 
@@ -18,27 +20,27 @@ class SlackRepositoryTest {
 
     @Test
     fun `URL QueryParam을 매핑한다`() {
-        val defaultUrl = UrlFormatter.make("conversations.history", "token-value")
-        assertThat(defaultUrl).isEqualTo("https://slack.com/api/conversations.history?token=token-value")
+        val defaultUrl = UrlFormatter.make(API_HISTORY, "token-value")
+        assertThat(defaultUrl).isEqualTo("$HOST$API_HISTORY?token=token-value")
 
-        val addChannel = UrlFormatter.make("conversations.history", "token-value", channel = "channel-value")
-        assertThat(addChannel).isEqualTo("https://slack.com/api/conversations.history?token=token-value&channel=channel-value")
+        val addChannel = UrlFormatter.make(API_HISTORY, "token-value", channel = "channel-value")
+        assertThat(addChannel).isEqualTo("$HOST$API_HISTORY?token=token-value&channel=channel-value")
 
-        val addTs = UrlFormatter.make("conversations.history", "token-value", channel = "channel-value", ts = "ts-value")
-        assertThat(addTs).isEqualTo("https://slack.com/api/conversations.history?token=token-value&channel=channel-value&ts=ts-value")
+        val addTs = UrlFormatter.make(API_HISTORY, "token-value", channel = "channel-value", ts = "ts-value")
+        assertThat(addTs).isEqualTo("$HOST$API_HISTORY?token=token-value&channel=channel-value&ts=ts-value")
     }
 
     @Test
     fun `Slack 특정 채널의 히스토리를 조회한다`() {
-        val response = toHistory(slackRepository.request(UrlFormatter.make("conversations.history", userToken, channel = channel)))
+        val response = toHistory(slackRepository.request(UrlFormatter.make(API_HISTORY, userToken, channel = channel)))
 
         assertThat(response.exist()).isTrue()
     }
 
     @Test
     fun `Slack 특정 채널의 특정 시간대 Thread를 조회한다`() {
-        val history = toHistory(slackRepository.request(UrlFormatter.make("conversations.history", userToken, channel = channel)))
-        val answers = toHistory(slackRepository.request(UrlFormatter.make("conversations.replies", userToken, channel, history.messages[0].ts)))
+        val history = toHistory(slackRepository.request(UrlFormatter.make(API_HISTORY, userToken, channel = channel)))
+        val answers = toHistory(slackRepository.request(UrlFormatter.make(API_REPLY, userToken, channel, history.messages[0].ts)))
 
         assertThat(answers.exist()).isTrue()
     }

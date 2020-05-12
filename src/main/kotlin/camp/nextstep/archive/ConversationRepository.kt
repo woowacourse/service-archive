@@ -1,6 +1,6 @@
 package camp.nextstep.archive
 
-import org.springframework.data.repository.CrudRepository
+import org.springframework.data.jpa.repository.JpaRepository
 
-interface ConversationRepository : CrudRepository<Conversation, Long> {
+interface ConversationRepository : JpaRepository<Conversation, Long> {
 }

@@ -22,6 +22,7 @@ abstract class BaseAuditEntity protected constructor() {
 
 @Entity
 class Conversation(
+        @Lob
         val message: String,
 
         val userId: String,
@@ -38,6 +39,10 @@ class Conversation(
     fun add(reply: Reply) {
         replies.add(reply)
     }
+
+    fun addAll(replies: List<Reply>) {
+        this.replies.addAll(replies)
+    }
 }
 
 @Entity
@@ -45,6 +50,8 @@ class Reply(
         @ManyToOne
         @JoinColumn(foreignKey = ForeignKey(name = "fk_reply_conversation"))
         val conversation: Conversation,
+
+        @Lob
         val message: String,
         val userId: String,
         val replyTime: LocalDateTime,

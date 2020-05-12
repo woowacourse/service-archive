@@ -1,6 +1,6 @@
 package camp.nextstep.slack
 
-import camp.nextstep.Rest
+import camp.nextstep.http.Rest
 import camp.nextstep.slack.Mapper.toHistory
 import camp.nextstep.slack.Mapper.toUser
 import ch.qos.logback.core.CoreConstants.EMPTY_STRING
