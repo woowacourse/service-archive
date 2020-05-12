@@ -6,12 +6,12 @@ import com.fasterxml.jackson.annotation.JsonProperty
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class History(
         @JsonProperty("ok")
-        var status: String,
+        val status: String,
 
         @JsonProperty("messages")
         val messages: List<Message> = mutableListOf()
-) {
-    fun exist() = status == "true"
+) : Slack{
+    override fun exist() = status == CONDITION_TRUE
 }
 
 @JsonIgnoreProperties(ignoreUnknown = true)

@@ -26,5 +26,4 @@ class ConversationTest {
 
         assertThat(conversation.replies.size).isEqualTo(1)
     }
-
 }

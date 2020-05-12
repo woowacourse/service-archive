@@ -1,5 +1,6 @@
 package camp.nextstep.slack
 
+import camp.nextstep.slack.Mapper.toHistory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -11,7 +12,8 @@ class SlackRepositoryTest {
     @Autowired
     lateinit var slackRepository: SlackRepository
 
-    val token = ""
+    val botToken = ""
+    val userToken = ""
     val channel = ""
 
     @Test
@@ -26,25 +28,31 @@ class SlackRepositoryTest {
         assertThat(addTs).isEqualTo("https://slack.com/api/conversations.history?token=token-value&channel=channel-value&ts=ts-value")
     }
 
-
     @Test
     fun `Slack 특정 채널의 히스토리를 조회한다`() {
-        val response = slackRepository.request(UrlFormatter.make("conversations.history", token, channel = channel))
+        val response = toHistory(slackRepository.request(UrlFormatter.make("conversations.history", userToken, channel = channel)))
 
         assertThat(response.exist()).isTrue()
     }
 
     @Test
     fun `Slack 특정 채널의 특정 시간대 Thread를 조회한다`() {
-        val history = slackRepository.request(UrlFormatter.make("conversations.history", token, channel = channel))
-        val answers = slackRepository.request(UrlFormatter.make("conversations.replies", token, channel, history.messages[0].ts))
+        val history = toHistory(slackRepository.request(UrlFormatter.make("conversations.history", userToken, channel = channel)))
+        val answers = toHistory(slackRepository.request(UrlFormatter.make("conversations.replies", userToken, channel, history.messages[0].ts)))
 
         assertThat(answers.exist()).isTrue()
     }
 
     @Test
     fun `Slack 특정 채널의 히스토리(Thread 포함)를 조회한다`() {
-        val response = slackRepository.retrieve(token, channel)
+        val response = slackRepository.retrieve(userToken, channel)
+
+        assertThat(response.exist()).isTrue()
+    }
+
+    @Test
+    fun `Slack User 리스트를 조회한다`() {
+        val response = slackRepository.retrieveUsers(botToken)
 
         assertThat(response.exist()).isTrue()
     }

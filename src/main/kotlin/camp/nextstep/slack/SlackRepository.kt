@@ -1,7 +1,8 @@
 package camp.nextstep.slack
 
 import camp.nextstep.Rest
-import camp.nextstep.slack.DataMapper.read
+import camp.nextstep.slack.Mapper.toHistory
+import camp.nextstep.slack.Mapper.toUser
 import ch.qos.logback.core.CoreConstants.EMPTY_STRING
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
@@ -17,6 +18,11 @@ import java.time.LocalDateTime
 
 private val logger = KotlinLogging.logger { }
 
+const val HOST: String = "https://slack.com/api/"
+const val API_HISTORY = "conversations.history"
+const val API_REPLY = "conversations.replies"
+const val API_USERS = "users.list"
+
 @Service
 class SlackRepository {
 
@@ -24,22 +30,26 @@ class SlackRepository {
     lateinit var slackRest: SlackRest
 
     fun retrieve(token: String, channel: String): Conversations {
-        val history = request(UrlFormatter.make("conversations.history", token, channel))
+        val history = toHistory(request(UrlFormatter.make(API_HISTORY, token, channel)))
         return retrieveAnswers(history, token, channel)
     }
 
     fun retrieveAnswers(history: History, token: String, channel: String): Conversations {
         val conversations = Conversations()
         history.messages.forEach {
-            conversations.add(it, request(UrlFormatter.make("conversations.replies", token, channel, it.ts)))
+            conversations.add(it, toHistory(request(UrlFormatter.make(API_REPLY, token, channel, it.ts))))
         }
         return conversations
     }
 
-    fun request(url: String): History {
+    fun retrieveUsers(token: String): User {
+        return toUser(request(UrlFormatter.make(API_USERS, token)))
+    }
+
+    fun request(url: String): String? {
         val headers = HttpHeaders()
         headers.contentType = MediaType.APPLICATION_FORM_URLENCODED
-        return read(slackRest.request(HttpMethod.GET, url, null, headers).body)
+        return slackRest.request(HttpMethod.GET, url, null, headers).body
     }
 }
 
@@ -55,30 +65,16 @@ object DateTimeConverter {
                     .substring(0, SLACK_TIMESTAMP_LENGTH).toLong()
 }
 
-const val host: String = "https://slack.com/api/"
-
 class Url(
         private val api: String,
         private val token: String,
         private val channel: String,
         private val ts: String
-
 ) {
-    fun get() = "${host}${api}?token=${token}${getChannel()}${getTs()}"
+    fun get() = "${HOST}${api}?token=${token}${getChannel()}${getTs()}"
 
-    private fun getChannel(): String {
-        if (channel.isNullOrBlank()) {
-            return EMPTY_STRING
-        }
-        return "&channel=$channel"
-    }
-
-    private fun getTs(): String {
-        if (ts.isNullOrBlank()) {
-            return EMPTY_STRING
-        }
-        return "&ts=$ts"
-    }
+    private fun getChannel(): String = if (channel.isNullOrBlank()) EMPTY_STRING else "&channel=$channel"
+    private fun getTs(): String = if (ts.isNullOrBlank()) EMPTY_STRING else "&ts=$ts"
 }
 
 object UrlFormatter {
@@ -87,10 +83,11 @@ object UrlFormatter {
     }
 }
 
-object DataMapper {
+object Mapper {
     private val mapper: ObjectMapper = jacksonObjectMapper()
 
-    fun read(body: String?): History = mapper.readValue(body, History::class.java)
+    fun toHistory(body: String?): History = mapper.readValue(body, History::class.java)
+    fun toUser(body: String?): User = mapper.readValue(body, User::class.java)
 }
 
 @Component
