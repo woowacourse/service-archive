@@ -55,13 +55,35 @@ object DateTimeConverter {
                     .substring(0, SLACK_TIMESTAMP_LENGTH).toLong()
 }
 
-object UrlFormatter {
-    fun make(api: String, token: String, channel: String, ts: String = EMPTY_STRING): String {
-        val url = "https://slack.com/api/${api}?token=${token}&channel=${channel}"
-        if (ts.isNullOrBlank()) {
-            return url
+const val host: String = "https://slack.com/api/"
+
+class Url(
+        private val api: String,
+        private val token: String,
+        private val channel: String,
+        private val ts: String
+
+) {
+    fun get() = "${host}${api}?token=${token}${getChannel()}${getTs()}"
+
+    private fun getChannel(): String {
+        if (channel.isNullOrBlank()) {
+            return EMPTY_STRING
         }
-        return "${url}&ts=${ts}"
+        return "&channel=$channel"
+    }
+
+    private fun getTs(): String {
+        if (ts.isNullOrBlank()) {
+            return EMPTY_STRING
+        }
+        return "&ts=$ts"
+    }
+}
+
+object UrlFormatter {
+    fun make(api: String, token: String, channel: String = EMPTY_STRING, ts: String = EMPTY_STRING): String {
+        return Url(api, token, channel, ts).get()
     }
 }
 
