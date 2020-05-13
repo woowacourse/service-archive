@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
+import java.util.*
 
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -84,6 +85,7 @@ class SlackRepositoryTest {
 
     @Test
     fun `Slack Timestamp to LocalDateTime`() {
+        TimeZone.setDefault(TimeZone.getTimeZone("Asia/Seoul"))
         val timeStamp = "1589190185.365000"
         val expected = "2020-05-11T18:43:05.365"
         val actual = toLocalDateTime(timeStamp)
