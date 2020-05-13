@@ -4,10 +4,13 @@ import camp.nextstep.slack.Conversations
 import camp.nextstep.slack.DateTimeConverter.toLocalDateTime
 import camp.nextstep.slack.Message
 import camp.nextstep.slack.SlackService
+import mu.KotlinLogging
 import org.springframework.stereotype.Service
 import java.util.stream.Collectors.toList
 
 const val INITIAL_INDEX = 1
+
+private val logger = KotlinLogging.logger { }
 
 @Service
 class ConversationService(
@@ -24,10 +27,10 @@ class ConversationService(
         if (savedConversations.isEmpty()) {
             return saveAll(slackService.retrieve())
         }
-        return saveAll(slackService.retrieve(getLastToSecondTime(savedConversations)))
+        return saveAll(slackService.retrieve(getLastConversationTime(savedConversations)))
     }
 
-    private fun getLastToSecondTime(savedConversations: List<Conversation>) =
+    private fun getLastConversationTime(savedConversations: List<Conversation>) =
             savedConversations[savedConversations.size - 1].conversationTime.toString()
 
     private fun saveAll(conversations: Conversations): MutableList<Conversation> {

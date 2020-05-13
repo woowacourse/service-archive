@@ -1,6 +1,7 @@
 package camp.nextstep.slack
 
 import camp.nextstep.http.Rest
+import camp.nextstep.slack.DateTimeConverter.toTimestamp
 import camp.nextstep.slack.Mapper.toHistory
 import camp.nextstep.slack.Mapper.toUser
 import camp.nextstep.slack.UrlFormatter.make
@@ -16,6 +17,8 @@ import org.springframework.util.MultiValueMap
 import org.springframework.web.client.RestTemplate
 import java.sql.Timestamp
 import java.time.LocalDateTime
+import java.time.ZoneId
+import javax.transaction.Transactional
 
 private val logger = KotlinLogging.logger { }
 
@@ -30,8 +33,9 @@ class SlackRepository {
     @Autowired
     lateinit var slackRest: SlackRest
 
+    @Transactional
     fun retrieve(token: String, channel: String, oldest: String = EMPTY_STRING): Conversations {
-        val history = toHistory(request(make(API_HISTORY, token, channel, oldest = oldest)))
+        val history = toHistory(request(make(API_HISTORY, token, channel, oldest = toTimestamp(oldest))))
         return retrieveAnswers(history, token, channel)
     }
 
@@ -59,6 +63,17 @@ object DateTimeConverter {
     private const val SLACK_TIMESTAMP_LENGTH = 13
 
     fun toLocalDateTime(timestamp: String): LocalDateTime = Timestamp(convert(timestamp)).toLocalDateTime()
+    fun toTimestamp(datetime: String): String {
+        if (datetime.isNullOrBlank()) {
+            return EMPTY_STRING
+        }
+        return LocalDateTime
+                .parse(datetime)
+                .atZone(ZoneId.of("Asia/Seoul"))
+                .toEpochSecond()
+                .toString() + ".999999"
+    }
+
 
     private fun convert(timestamp: String): Long =
             timestamp

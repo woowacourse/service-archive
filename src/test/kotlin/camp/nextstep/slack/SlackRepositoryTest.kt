@@ -1,6 +1,7 @@
 package camp.nextstep.slack
 
 import camp.nextstep.slack.DateTimeConverter.toLocalDateTime
+import camp.nextstep.slack.DateTimeConverter.toTimestamp
 import camp.nextstep.slack.Mapper.toHistory
 import camp.nextstep.slack.UrlFormatter.make
 import org.assertj.core.api.Assertions.assertThat
@@ -90,6 +91,16 @@ class SlackRepositoryTest {
         val expected = "2020-05-11T18:43:05.365"
         val actual = toLocalDateTime(timeStamp)
 
+        assertThat(actual).isEqualTo(expected)
+    }
+
+    @Test
+    fun `LocalDateTime to Slack Timestamp`() {
+        TimeZone.setDefault(TimeZone.getTimeZone("Asia/Seoul"))
+        val datetime = "2020-05-11T18:43:05.365"
+        val expected = "1589190185.000000"
+
+        val actual = toTimestamp(datetime)
         assertThat(actual).isEqualTo(expected)
     }
 }
