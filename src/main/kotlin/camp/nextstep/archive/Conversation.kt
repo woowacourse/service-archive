@@ -1,5 +1,7 @@
 package camp.nextstep.archive
 
+import com.fasterxml.jackson.annotation.JsonBackReference
+import com.fasterxml.jackson.annotation.JsonManagedReference
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
@@ -29,13 +31,15 @@ class Conversation(
 
         val conversationTime: LocalDateTime,
 
-        @OneToMany(mappedBy = "conversation", cascade = [CascadeType.MERGE])
-        val replies: MutableList<Reply> = mutableListOf(),
-
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         val id: Long = 0
 ) : BaseAuditEntity() {
+
+    @JsonManagedReference
+    @OneToMany(mappedBy = "conversation", cascade = [CascadeType.MERGE, CascadeType.PERSIST])
+    val replies: MutableList<Reply> = mutableListOf()
+
     fun add(reply: Reply) {
         replies.add(reply)
     }
@@ -47,6 +51,7 @@ class Conversation(
 
 @Entity
 class Reply(
+        @JsonBackReference
         @ManyToOne
         @JoinColumn(foreignKey = ForeignKey(name = "fk_reply_conversation"))
         val conversation: Conversation,

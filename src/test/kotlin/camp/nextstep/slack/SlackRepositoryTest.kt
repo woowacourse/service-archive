@@ -10,7 +10,8 @@ import org.springframework.test.context.ActiveProfiles
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class SlackRepositoryTest {
-
+//TODO: Property를 별도로 관리한다.
+//TODO: 예외처리를 추가한다.
     @Autowired
     lateinit var slackRepository: SlackRepository
 
