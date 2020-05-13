@@ -24,11 +24,11 @@ class ConversationService(
         if (savedConversations.isEmpty()) {
             return saveAll(slackService.retrieve())
         }
-        return saveAll(slackService.retrieve(getLastConversationTime(savedConversations)))
+        return saveAll(slackService.retrieve(getLastToSecondTime(savedConversations)))
     }
 
-    private fun getLastConversationTime(savedConversations: List<Conversation>) =
-            savedConversations.last().conversationTime.toString()
+    private fun getLastToSecondTime(savedConversations: List<Conversation>) =
+            savedConversations[savedConversations.size - 1].conversationTime.toString()
 
     private fun saveAll(conversations: Conversations): MutableList<Conversation> {
         return repository.saveAll(toList(conversations))
