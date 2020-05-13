@@ -3,14 +3,10 @@ package camp.nextstep.archive
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
-import javax.transaction.Transactional
 
-@SpringBootTest
-@Transactional
 class ConversationRepositoryTest @Autowired constructor(
         val conversationRepository: ConversationRepository
-) : BaseArchiveTest() {
+) : RepositoryTest() {
 
     @Test
     fun `Reply 객체가 저장하는지 확인`() {

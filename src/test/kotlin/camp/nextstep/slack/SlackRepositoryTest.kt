@@ -1,6 +1,8 @@
 package camp.nextstep.slack
 
+import camp.nextstep.slack.DateTimeConverter.toLocalDateTime
 import camp.nextstep.slack.Mapper.toHistory
+import camp.nextstep.slack.UrlFormatter.make
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -33,15 +35,24 @@ class SlackRepositoryTest {
 
     @Test
     fun `Slack 특정 채널의 히스토리를 조회한다`() {
-        val response = toHistory(slackRepository.request(UrlFormatter.make(API_HISTORY, userToken, channel = channel)))
+        val response = toHistory(slackRepository.request(make(API_HISTORY, userToken, channel = channel)))
 
         assertThat(response.exist()).isTrue()
     }
 
     @Test
+    fun `특정 시점 이후의 Slack 특정 채널의 히스토리를 조회한다`() {
+        val secondMessage = toHistory(slackRepository.request(make(API_HISTORY, userToken, channel = channel))).messages[1]
+        val latest = toHistory(slackRepository.request(make(API_HISTORY, userToken, channel = channel, oldest = secondMessage.ts)))
+
+        assertThat(latest.exist()).isTrue()
+        assertThat(latest.messages.size).isEqualTo(1)
+    }
+
+    @Test
     fun `Slack 특정 채널의 특정 시간대 Thread를 조회한다`() {
-        val history = toHistory(slackRepository.request(UrlFormatter.make(API_HISTORY, userToken, channel = channel)))
-        val answers = toHistory(slackRepository.request(UrlFormatter.make(API_REPLY, userToken, channel, history.messages[0].ts)))
+        val history = toHistory(slackRepository.request(make(API_HISTORY, userToken, channel = channel)))
+        val answers = toHistory(slackRepository.request(make(API_REPLY, userToken, channel, history.messages[0].ts)))
 
         assertThat(answers.exist()).isTrue()
     }
@@ -64,7 +75,7 @@ class SlackRepositoryTest {
     fun `Slack Timestamp to LocalDateTime`() {
         val timeStamp = "1589190185.365000"
         val expected = "2020-05-11T18:43:05.365"
-        val actual = DateTimeConverter.toLocalDateTime(timeStamp)
+        val actual = toLocalDateTime(timeStamp)
 
         assertThat(actual).isEqualTo(expected)
     }

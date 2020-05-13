@@ -1,5 +1,6 @@
 package camp.nextstep.archive
 
+import camp.nextstep.slack.Conversations
 import camp.nextstep.slack.DateTimeConverter.toLocalDateTime
 import camp.nextstep.slack.Message
 import camp.nextstep.slack.SlackService
@@ -14,16 +15,32 @@ class ConversationService(
         private val slackService: SlackService
 ) {
     fun archive(): List<Conversation> {
-        val conversations = slackService.retrieve()
+        return save(retrieve())
+    }
+
+    fun retrieve(): List<Conversation> = repository.findAllByOrderByConversationTime()
+
+    private fun save(savedConversations: List<Conversation>): MutableList<Conversation> {
+        if (savedConversations.isEmpty()) {
+            return saveAll(slackService.retrieve())
+        }
+        return saveAll(slackService.retrieve(getLastConversationTime(savedConversations)))
+    }
+
+    private fun getLastConversationTime(savedConversations: List<Conversation>) =
+            savedConversations.last().conversationTime.toString()
+
+    private fun saveAll(conversations: Conversations): MutableList<Conversation> {
+        return repository.saveAll(toList(conversations))
+    }
+
+    private fun toList(conversations: Conversations): List<Conversation> {
+        return conversations
                 .conversations
                 .stream()
                 .map { to(it) }
                 .collect(toList())
-
-        return repository.saveAll(conversations)
     }
-
-    fun retrieve(): List<Conversation> = repository.findAll()
 
     private fun to(it: camp.nextstep.slack.Conversation): Conversation {
         val conversation = Conversation(it.message, it.user, toLocalDateTime(it.ts))

@@ -3,7 +3,11 @@ package camp.nextstep.archive
 import camp.nextstep.slack.DateTimeConverter.toLocalDateTime
 import camp.nextstep.slack.Message
 import org.junit.jupiter.api.BeforeEach
+import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.test.context.ActiveProfiles
+import javax.transaction.Transactional
 
+@ActiveProfiles("test")
 abstract class BaseArchiveTest {
     lateinit var conversation: Conversation
     val messages = arrayListOf<Message>()
@@ -24,3 +28,9 @@ abstract class BaseArchiveTest {
         return Reply(conversation, message.text, message.user, toLocalDateTime(message.ts))
     }
 }
+
+@SpringBootTest
+abstract class IntegrationTest protected constructor(): BaseArchiveTest()
+
+@Transactional
+abstract class RepositoryTest protected constructor() : IntegrationTest()

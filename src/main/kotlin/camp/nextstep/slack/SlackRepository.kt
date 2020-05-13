@@ -3,6 +3,7 @@ package camp.nextstep.slack
 import camp.nextstep.http.Rest
 import camp.nextstep.slack.Mapper.toHistory
 import camp.nextstep.slack.Mapper.toUser
+import camp.nextstep.slack.UrlFormatter.make
 import ch.qos.logback.core.CoreConstants.EMPTY_STRING
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
@@ -29,21 +30,21 @@ class SlackRepository {
     @Autowired
     lateinit var slackRest: SlackRest
 
-    fun retrieve(token: String, channel: String): Conversations {
-        val history = toHistory(request(UrlFormatter.make(API_HISTORY, token, channel)))
+    fun retrieve(token: String, channel: String, oldest: String = EMPTY_STRING): Conversations {
+        val history = toHistory(request(make(API_HISTORY, token, channel, oldest = oldest)))
         return retrieveAnswers(history, token, channel)
     }
 
     fun retrieveAnswers(history: History, token: String, channel: String): Conversations {
         val conversations = Conversations()
         history.messages.forEach {
-            conversations.add(it, toHistory(request(UrlFormatter.make(API_REPLY, token, channel, it.ts))))
+            conversations.add(it, toHistory(request(make(API_REPLY, token, channel, it.ts))))
         }
         return conversations
     }
 
     fun retrieveUsers(token: String): User {
-        return toUser(request(UrlFormatter.make(API_USERS, token)))
+        return toUser(request(make(API_USERS, token)))
     }
 
     fun request(url: String): String? {
@@ -69,17 +70,19 @@ class Url(
         private val api: String,
         private val token: String,
         private val channel: String,
-        private val ts: String
+        private val ts: String,
+        private val oldest: String
 ) {
-    fun get() = "${HOST}${api}?token=${token}${getChannel()}${getTs()}"
+    fun get() = "${HOST}${api}?token=${token}${getChannel()}${getTs()}${getOldest()}"
 
     private fun getChannel(): String = if (channel.isNullOrBlank()) EMPTY_STRING else "&channel=$channel"
     private fun getTs(): String = if (ts.isNullOrBlank()) EMPTY_STRING else "&ts=$ts"
+    private fun getOldest(): String = if (oldest.isNullOrBlank()) EMPTY_STRING else "&oldest=$oldest"
 }
 
 object UrlFormatter {
-    fun make(api: String, token: String, channel: String = EMPTY_STRING, ts: String = EMPTY_STRING): String {
-        return Url(api, token, channel, ts).get()
+    fun make(api: String, token: String, channel: String = EMPTY_STRING, ts: String = EMPTY_STRING, oldest: String = EMPTY_STRING): String {
+        return Url(api, token, channel, ts, oldest).get()
     }
 }
 
