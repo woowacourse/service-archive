@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired
 
 class ConversationRepositoryTest @Autowired constructor(
         val conversationRepository: ConversationRepository
-) : RepositoryTest() {
+) : IntegrationTest() {
 
     @Test
     fun `Reply 객체가 저장하는지 확인`() {
