@@ -4,6 +4,7 @@ import camp.nextstep.slack.DateTimeConverter.toLocalDateTime
 import camp.nextstep.slack.Mapper.toHistory
 import camp.nextstep.slack.UrlFormatter.make
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -17,19 +18,29 @@ class SlackRepositoryTest {
     @Autowired
     lateinit var slackRepository: SlackRepository
 
-    val botToken = ""
-    val userToken = ""
-    val channel = ""
+    @Autowired
+    lateinit var properties: SlackProperties
+
+    lateinit var botToken: String
+    lateinit var userToken: String
+    lateinit var channel: String
+
+    @BeforeEach
+    fun setUp() {
+        botToken = properties.botToken
+        userToken = properties.userToken
+        channel = properties.channel
+    }
 
     @Test
     fun `URL QueryParam을 매핑한다`() {
-        val defaultUrl = UrlFormatter.make(API_HISTORY, "token-value")
+        val defaultUrl = make(API_HISTORY, "token-value")
         assertThat(defaultUrl).isEqualTo("$HOST$API_HISTORY?token=token-value")
 
-        val addChannel = UrlFormatter.make(API_HISTORY, "token-value", channel = "channel-value")
+        val addChannel = make(API_HISTORY, "token-value", channel = "channel-value")
         assertThat(addChannel).isEqualTo("$HOST$API_HISTORY?token=token-value&channel=channel-value")
 
-        val addTs = UrlFormatter.make(API_HISTORY, "token-value", channel = "channel-value", ts = "ts-value")
+        val addTs = make(API_HISTORY, "token-value", channel = "channel-value", ts = "ts-value")
         assertThat(addTs).isEqualTo("$HOST$API_HISTORY?token=token-value&channel=channel-value&ts=ts-value")
     }
 
