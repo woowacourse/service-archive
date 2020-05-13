@@ -29,6 +29,7 @@ class Conversation(
 
         val userId: String,
 
+        @Column(unique = true)
         val conversationTime: LocalDateTime,
 
         @Id
