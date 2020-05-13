@@ -98,7 +98,7 @@ class SlackRepositoryTest {
     fun `LocalDateTime to Slack Timestamp`() {
         TimeZone.setDefault(TimeZone.getTimeZone("Asia/Seoul"))
         val datetime = "2020-05-11T18:43:05.365"
-        val expected = "1589190185.000000"
+        val expected = "1589190185.999999"
 
         val actual = toTimestamp(datetime)
         assertThat(actual).isEqualTo(expected)
