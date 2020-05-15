@@ -62,7 +62,11 @@ object DateTimeConverter {
     private const val UNNECESSARY_CHAR: String = "."
     private const val SLACK_TIMESTAMP_LENGTH = 13
 
-    fun toLocalDateTime(timestamp: String): LocalDateTime = Timestamp(convert(timestamp)).toLocalDateTime()
+    fun toLocalDateTime(timestamp: String): LocalDateTime = Timestamp(convert(timestamp))
+            .toLocalDateTime()
+            .atZone(ZoneId.of("Asia/Seoul"))
+            .toLocalDateTime()
+
     fun toTimestamp(datetime: String): String {
         if (datetime.isNullOrBlank()) {
             return EMPTY_STRING
