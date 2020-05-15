@@ -18,6 +18,7 @@ import org.springframework.web.client.RestTemplate
 import java.sql.Timestamp
 import java.time.LocalDateTime
 import java.time.ZoneId
+import java.util.*
 import javax.transaction.Transactional
 
 private val logger = KotlinLogging.logger { }
@@ -61,29 +62,33 @@ class SlackRepository {
 object DateTimeConverter {
     private const val UNNECESSARY_CHAR: String = "."
     private const val SLACK_TIMESTAMP_LENGTH = 13
+    private const val TIME_ZONE = "Asia/Seoul"
+    private const val SLACK_TIME_STAMP_OFFSET = ".999999"
 
-    fun toLocalDateTime(timestamp: String): LocalDateTime = Timestamp(convert(timestamp))
-            .toLocalDateTime()
-            .atZone(ZoneId.of("Asia/Seoul"))
-            .toLocalDateTime()
+    fun toLocalDateTime(timestamp: String): LocalDateTime {
+        TimeZone.setDefault(TimeZone.getTimeZone(TIME_ZONE))
+        return Timestamp(convert(timestamp))
+                .toLocalDateTime()
+    }
 
     fun toTimestamp(datetime: String): String {
+        TimeZone.setDefault(TimeZone.getTimeZone(TIME_ZONE))
         if (datetime.isNullOrBlank()) {
             return EMPTY_STRING
         }
         return LocalDateTime
                 .parse(datetime)
-                .atZone(ZoneId.of("Asia/Seoul"))
+                .atZone(ZoneId.of(TIME_ZONE))
                 .toEpochSecond()
-                .toString() + ".999999"
+                .toString() + SLACK_TIME_STAMP_OFFSET
     }
-
 
     private fun convert(timestamp: String): Long =
             timestamp
                     .replace(UNNECESSARY_CHAR, "")
                     .substring(0, SLACK_TIMESTAMP_LENGTH).toLong()
 }
+
 
 class Url(
         private val api: String,
