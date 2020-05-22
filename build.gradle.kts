@@ -48,6 +48,7 @@ dependencies {
 
 tasks.withType<Test> {
 	useJUnitPlatform()
+	jvmArgs("-Djava.security.egd=file:/dev/./urandom", "-Dspring.config.location=classpath:/config/")
 }
 
 tasks.withType<KotlinCompile> {
