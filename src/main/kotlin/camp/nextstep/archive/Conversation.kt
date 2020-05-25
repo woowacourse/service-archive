@@ -29,14 +29,12 @@ class Conversation(
 
         val userId: String,
 
-        @Column(unique = true)
         val conversationTime: LocalDateTime,
 
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         val id: Long = 0
 ) : BaseAuditEntity() {
-
     @JsonManagedReference
     @OneToMany(mappedBy = "conversation", cascade = [CascadeType.MERGE, CascadeType.PERSIST])
     val replies: MutableList<Reply> = mutableListOf()

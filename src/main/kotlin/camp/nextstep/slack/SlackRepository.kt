@@ -19,7 +19,6 @@ import java.sql.Timestamp
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.util.*
-import javax.transaction.Transactional
 
 private val logger = KotlinLogging.logger { }
 
@@ -34,7 +33,6 @@ class SlackRepository {
     @Autowired
     lateinit var slackRest: SlackRest
 
-    @Transactional
     fun retrieve(token: String, channel: String, oldest: String = EMPTY_STRING): Conversations {
         val history = toHistory(request(make(API_HISTORY, token, channel, oldest = toTimestamp(oldest))))
         return retrieveAnswers(history, token, channel)
