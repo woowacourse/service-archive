@@ -7,7 +7,7 @@
 ## git clone(submodule까지 clone)
 
 ```bash
-git clone --recurse-submodules https://github.com/woowacourse-projects/nextstep.git
+git clone --recurse-submodules https://github.com/woowacourse/archive.git
 ```
 
 ## 로컬 서버 시작시 config location 설정
