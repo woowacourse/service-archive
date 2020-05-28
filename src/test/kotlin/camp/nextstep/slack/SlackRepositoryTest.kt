@@ -10,7 +10,6 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
-import java.util.*
 
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -94,9 +93,18 @@ class SlackRepositoryTest {
     }
 
     @Test
+    fun `Slack Timestamp to LocalDateTime with Nanoseconds`() {
+        val timeStamp = "1589190185.365123"
+        val expected = "2020-05-11T18:43:05.365123"
+        val actual = toLocalDateTime(timeStamp)
+
+        assertThat(actual).isEqualTo(expected)
+    }
+
+    @Test
     fun `LocalDateTime to Slack Timestamp`() {
-        val datetime = "2020-05-11T18:43:05.365"
-        val expected = "1589190185.999999"
+        val datetime = "2020-05-11T18:43:05.365123"
+        val expected = "1589190185.365123"
 
         val actual = toTimestamp(datetime)
         assertThat(actual).isEqualTo(expected)

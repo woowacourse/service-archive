@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service
 import org.springframework.util.MultiValueMap
 import org.springframework.web.client.RestTemplate
 import java.sql.Timestamp
+import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.util.*
@@ -58,33 +59,35 @@ class SlackRepository {
 }
 
 object DateTimeConverter {
-    private const val UNNECESSARY_CHAR: String = "."
-    private const val SLACK_TIMESTAMP_LENGTH = 13
+    private const val DELIMITER: String = "."
+    private const val NANO_ADJUSTMENT = 1000L
     private const val TIME_ZONE = "Asia/Seoul"
-    private const val SLACK_TIME_STAMP_OFFSET = ".999999"
 
     fun toLocalDateTime(timestamp: String): LocalDateTime {
         TimeZone.setDefault(TimeZone.getTimeZone(TIME_ZONE))
-        return Timestamp(convert(timestamp))
-                .toLocalDateTime()
+        return convert(timestamp).toLocalDateTime()
     }
 
-    fun toTimestamp(datetime: String): String {
+    fun toTimestamp(datetimeWithNanoSeconds: String): String {
         TimeZone.setDefault(TimeZone.getTimeZone(TIME_ZONE))
-        if (datetime.isNullOrBlank()) {
+        if (datetimeWithNanoSeconds.isNullOrBlank()) {
             return EMPTY_STRING
         }
-        return LocalDateTime
-                .parse(datetime)
+        val (dateTime, nanoSeconds) = datetimeWithNanoSeconds.split(DELIMITER)
+
+        val localDateTime = LocalDateTime
+                .parse(dateTime)
                 .atZone(ZoneId.of(TIME_ZONE))
                 .toEpochSecond()
-                .toString() + SLACK_TIME_STAMP_OFFSET
+        return "$localDateTime.$nanoSeconds"
     }
 
-    private fun convert(timestamp: String): Long =
-            timestamp
-                    .replace(UNNECESSARY_CHAR, "")
-                    .substring(0, SLACK_TIMESTAMP_LENGTH).toLong()
+    private fun convert(timestamp: String): Timestamp {
+        val (dateTime, nanoSeconds) = timestamp.split(DELIMITER)
+                .map { it.toLong() }
+
+        return Timestamp.from(Instant.ofEpochSecond(dateTime, nanoSeconds * NANO_ADJUSTMENT))
+    }
 }
 
 

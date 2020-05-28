@@ -21,4 +21,11 @@ class ConversationRepositoryTest @Autowired constructor(
         assertThat(actual).isEqualTo(expected)
         assertThat(actual.replies.size).isEqualTo(messages.size)
     }
+
+    @Test
+    fun `Nanoseconds 를 구분하여 저장하는지 확인`() {
+        val persistConversation = conversationRepository.save(conversation)
+
+        assertThat(persistConversation.conversationTime).isEqualTo(conversation.conversationTime)
+    }
 }
