@@ -68,18 +68,9 @@ object DateTimeConverter {
         return convert(timestamp).toLocalDateTime()
     }
 
-    fun toTimestamp(datetimeWithNanoSeconds: String): String {
+    fun toTimestamp(datetime: String): String {
         TimeZone.setDefault(TimeZone.getTimeZone(TIME_ZONE))
-        if (datetimeWithNanoSeconds.isNullOrBlank()) {
-            return EMPTY_STRING
-        }
-        val (dateTime, nanoSeconds) = datetimeWithNanoSeconds.split(DELIMITER)
-
-        val localDateTime = LocalDateTime
-                .parse(dateTime)
-                .atZone(ZoneId.of(TIME_ZONE))
-                .toEpochSecond()
-        return "$localDateTime.$nanoSeconds"
+        return toTimestampByString(datetime)
     }
 
     private fun convert(timestamp: String): Timestamp {
@@ -87,6 +78,18 @@ object DateTimeConverter {
                 .map { it.toLong() }
 
         return Timestamp.from(Instant.ofEpochSecond(dateTime, nanoSeconds * NANO_ADJUSTMENT))
+    }
+
+    private fun toTimestampByString(datetime: String): String {
+        if (datetime.isNullOrBlank()) {
+            return EMPTY_STRING
+        }
+        val (dateTime, nanoSeconds) = datetime.split(DELIMITER)
+        val timestamp = LocalDateTime
+                .parse(dateTime)
+                .atZone(ZoneId.of(TIME_ZONE))
+                .toEpochSecond()
+        return "${timestamp}.$nanoSeconds"
     }
 }
 

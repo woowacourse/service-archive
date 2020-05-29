@@ -14,8 +14,7 @@ import org.springframework.test.context.ActiveProfiles
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class SlackRepositoryTest {
-//TODO: Property를 별도로 관리한다.
-//TODO: 예외처리를 추가한다.
+
     @Autowired
     lateinit var slackRepository: SlackRepository
 
@@ -81,15 +80,6 @@ class SlackRepositoryTest {
         val response = slackRepository.retrieveUsers(botToken)
 
         assertThat(response.exist()).isTrue()
-    }
-
-    @Test
-    fun `Slack Timestamp to LocalDateTime`() {
-        val timeStamp = "1589190185.365000"
-        val expected = "2020-05-11T18:43:05.365"
-        val actual = toLocalDateTime(timeStamp)
-
-        assertThat(actual).isEqualTo(expected)
     }
 
     @Test

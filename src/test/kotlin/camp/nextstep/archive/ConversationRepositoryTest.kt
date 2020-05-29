@@ -23,7 +23,7 @@ class ConversationRepositoryTest @Autowired constructor(
     }
 
     @Test
-    fun `Nanoseconds 를 구분하여 저장하는지 확인`() {
+    fun `대화시간(nanosecond를 포함)을 그대로 저장하는지 확인`() {
         val persistConversation = conversationRepository.save(conversation)
 
         assertThat(persistConversation.conversationTime).isEqualTo(conversation.conversationTime)
