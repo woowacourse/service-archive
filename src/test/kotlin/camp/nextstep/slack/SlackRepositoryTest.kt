@@ -10,13 +10,11 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
-import java.util.*
 
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class SlackRepositoryTest {
-//TODO: Property를 별도로 관리한다.
-//TODO: 예외처리를 추가한다.
+
     @Autowired
     lateinit var slackRepository: SlackRepository
 
@@ -85,9 +83,9 @@ class SlackRepositoryTest {
     }
 
     @Test
-    fun `Slack Timestamp to LocalDateTime`() {
-        val timeStamp = "1589190185.365000"
-        val expected = "2020-05-11T18:43:05.365"
+    fun `Slack Timestamp to LocalDateTime with Nanoseconds`() {
+        val timeStamp = "1589190185.365123"
+        val expected = "2020-05-11T18:43:05.365123"
         val actual = toLocalDateTime(timeStamp)
 
         assertThat(actual).isEqualTo(expected)
@@ -95,8 +93,8 @@ class SlackRepositoryTest {
 
     @Test
     fun `LocalDateTime to Slack Timestamp`() {
-        val datetime = "2020-05-11T18:43:05.365"
-        val expected = "1589190185.999999"
+        val datetime = "2020-05-11T18:43:05.365123"
+        val expected = "1589190185.365123"
 
         val actual = toTimestamp(datetime)
         assertThat(actual).isEqualTo(expected)
