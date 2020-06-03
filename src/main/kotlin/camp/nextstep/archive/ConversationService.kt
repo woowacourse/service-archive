@@ -14,12 +14,10 @@ private val logger = KotlinLogging.logger { }
 
 @Service
 class ConversationService(
-        private val repository: ConversationRepository,
-        private val slackService: SlackService
+    private val repository: ConversationRepository,
+    private val slackService: SlackService
 ) {
-    fun archive(): List<Conversation> {
-        return save(retrieve())
-    }
+    fun archive(): List<Conversation> = save(retrieve())
 
     fun retrieve(): List<Conversation> = repository.findAllByOrderByConversationTime()
 
@@ -31,18 +29,16 @@ class ConversationService(
     }
 
     private fun getLastConversationTime(savedConversations: List<Conversation>) =
-            savedConversations[savedConversations.size - 1].conversationTime.toString()
+        savedConversations[savedConversations.size - 1].conversationTime.toString()
 
-    private fun saveAll(conversations: Conversations): MutableList<Conversation> {
-        return repository.saveAll(toList(conversations))
-    }
+    private fun saveAll(conversations: Conversations): MutableList<Conversation> =
+        repository.saveAll(toList(conversations))
 
     private fun toList(conversations: Conversations): List<Conversation> {
         return conversations
-                .conversations
-                .stream()
-                .map { to(it) }
-                .collect(toList())
+            .conversations.stream()
+            .map { to(it) }
+            .collect(toList())
     }
 
     private fun to(it: camp.nextstep.slack.Conversation): Conversation {
@@ -53,10 +49,10 @@ class ConversationService(
 
     private fun assemble(conversation: Conversation, messages: List<Message>): MutableList<Reply> {
         return messages
-                .subList(INITIAL_INDEX, messages.size)
-                .stream()
-                .map { assemble(conversation, it) }
-                .collect(toList())
+            .subList(INITIAL_INDEX, messages.size)
+            .stream()
+            .map { assemble(conversation, it) }
+            .collect(toList())
     }
 
     private fun assemble(conversation: Conversation, message: Message): Reply {

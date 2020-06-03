@@ -35,7 +35,8 @@ class SlackRepository {
     lateinit var slackRest: SlackRest
 
     fun retrieve(token: String, channel: String, oldest: String = EMPTY_STRING): Conversations {
-        val history = toHistory(request(make(API_HISTORY, token, channel, oldest = toTimestamp(oldest))))
+        val history =
+            toHistory(request(make(API_HISTORY, token, channel, oldest = toTimestamp(oldest))))
         return retrieveAnswers(history, token, channel)
     }
 
@@ -75,7 +76,7 @@ object DateTimeConverter {
 
     private fun convert(timestamp: String): Timestamp {
         val (dateTime, nanoSeconds) = timestamp.split(DELIMITER)
-                .map { it.toLong() }
+            .map { it.toLong() }
 
         return Timestamp.from(Instant.ofEpochSecond(dateTime, nanoSeconds * NANO_ADJUSTMENT))
     }
@@ -86,30 +87,39 @@ object DateTimeConverter {
         }
         val (dateTime, nanoSeconds) = datetime.split(DELIMITER)
         val timestamp = LocalDateTime
-                .parse(dateTime)
-                .atZone(ZoneId.of(TIME_ZONE))
-                .toEpochSecond()
+            .parse(dateTime)
+            .atZone(ZoneId.of(TIME_ZONE))
+            .toEpochSecond()
         return "${timestamp}.$nanoSeconds"
     }
 }
 
 
 class Url(
-        private val api: String,
-        private val token: String,
-        private val channel: String,
-        private val ts: String,
-        private val oldest: String
+    private val api: String,
+    private val token: String,
+    private val channel: String,
+    private val ts: String,
+    private val oldest: String
 ) {
     fun get() = "${HOST}${api}?token=${token}${getChannel()}${getTs()}${getOldest()}"
 
-    private fun getChannel(): String = if (channel.isNullOrBlank()) EMPTY_STRING else "&channel=$channel"
+    private fun getChannel(): String =
+        if (channel.isNullOrBlank()) EMPTY_STRING else "&channel=$channel"
+
     private fun getTs(): String = if (ts.isNullOrBlank()) EMPTY_STRING else "&ts=$ts"
-    private fun getOldest(): String = if (oldest.isNullOrBlank()) EMPTY_STRING else "&oldest=$oldest"
+    private fun getOldest(): String =
+        if (oldest.isNullOrBlank()) EMPTY_STRING else "&oldest=$oldest"
 }
 
 object UrlFormatter {
-    fun make(api: String, token: String, channel: String = EMPTY_STRING, ts: String = EMPTY_STRING, oldest: String = EMPTY_STRING): String {
+    fun make(
+        api: String,
+        token: String,
+        channel: String = EMPTY_STRING,
+        ts: String = EMPTY_STRING,
+        oldest: String = EMPTY_STRING
+    ): String {
         return Url(api, token, channel, ts, oldest).get()
     }
 }
@@ -123,16 +133,18 @@ object Mapper {
 
 @Component
 class SlackRest : Rest<MultiValueMap<String, String>> {
-    override fun request(method: HttpMethod,
-                         url: String,
-                         contents: MultiValueMap<String, String>?,
-                         headers: HttpHeaders): ResponseEntity<String> {
+    override fun request(
+        method: HttpMethod,
+        url: String,
+        contents: MultiValueMap<String, String>?,
+        headers: HttpHeaders
+    ): ResponseEntity<String> {
         logger.debug("request url : {}, params : {}", url, contents)
         return RestTemplate().exchange(
-                url,
-                method,
-                HttpEntity(contents, headers),
-                String::class.java
+            url,
+            method,
+            HttpEntity(contents, headers),
+            String::class.java
         )
     }
 }

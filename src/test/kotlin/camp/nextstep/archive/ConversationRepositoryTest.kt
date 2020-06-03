@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 
 class ConversationRepositoryTest @Autowired constructor(
-        val conversationRepository: ConversationRepository
+    val conversationRepository: ConversationRepository
 ) : IntegrationTest() {
 
     @Test
@@ -15,8 +15,8 @@ class ConversationRepositoryTest @Autowired constructor(
 
         val expected = conversationRepository.save(conversation)
         val actual = conversationRepository
-                .findById(expected.id)
-                .orElseThrow { throw NoSuchElementException("객체를 찾을 수 없습니다.") }
+            .findById(expected.id)
+            .orElseThrow { throw NoSuchElementException("객체를 찾을 수 없습니다.") }
 
         assertThat(actual).isEqualTo(expected)
         assertThat(actual.replies.size).isEqualTo(messages.size)

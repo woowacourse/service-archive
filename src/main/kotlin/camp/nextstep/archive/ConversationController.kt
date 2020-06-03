@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 class ConversationController(
-        private val conversationService: ConversationService
+    private val conversationService: ConversationService
 ) {
     @GetMapping("/conversations")
     fun retrieve(): ResponseEntity<List<Conversation>> {

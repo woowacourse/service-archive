@@ -31,5 +31,5 @@ abstract class BaseArchiveTest {
 
 @Transactional
 @SpringBootTest
-abstract class IntegrationTest protected constructor(): BaseArchiveTest()
+abstract class IntegrationTest protected constructor() : BaseArchiveTest()
 

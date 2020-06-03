@@ -14,9 +14,10 @@ class SlackProperties {
 
 @Service
 class SlackService(
-        private val repository: SlackRepository,
-        private val properties: SlackProperties
+    private val repository: SlackRepository,
+    private val properties: SlackProperties
 ) {
     fun retrieve() = repository.retrieve(properties.userToken, properties.channel)
-    fun retrieve(oldest: String) = repository.retrieve(properties.userToken, properties.channel, oldest)
+    fun retrieve(oldest: String) =
+        repository.retrieve(properties.userToken, properties.channel, oldest)
 }

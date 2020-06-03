@@ -5,22 +5,22 @@ import com.fasterxml.jackson.annotation.JsonProperty
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class History(
-        @JsonProperty("ok")
-        val status: String,
+    @JsonProperty("ok")
+    val status: String,
 
-        @JsonProperty("messages")
-        val messages: List<Message> = mutableListOf()
-) : Slack{
+    @JsonProperty("messages")
+    val messages: List<Message> = mutableListOf()
+) : Slack {
     override fun exist() = status == CONDITION_TRUE
 }
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class Message(
-        val text: String,
+    val text: String,
 
-        val user: String = "",
+    val user: String = "",
 
-        val ts: String
+    val ts: String
 ) {
     override fun toString(): String {
         return "user: $user, text: $text\n"
@@ -28,7 +28,7 @@ data class Message(
 }
 
 data class Conversations(
-        val conversations: MutableList<Conversation> = mutableListOf()
+    val conversations: MutableList<Conversation> = mutableListOf()
 ) {
     fun add(message: Message, history: History) {
         if (history.exist()) {
@@ -40,8 +40,8 @@ data class Conversations(
 }
 
 data class Conversation(
-        val message: String,
-        val user: String,
-        val ts: String,
-        val thread: History
+    val message: String,
+    val user: String,
+    val ts: String,
+    val thread: History
 )
