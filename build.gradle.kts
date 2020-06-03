@@ -3,6 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
 	id("org.springframework.boot") version "2.2.6.RELEASE"
 	id("io.spring.dependency-management") version "1.0.9.RELEASE"
+	id("org.flywaydb.flyway") version "6.0.4"
 	kotlin("jvm") version "1.3.71"
 	kotlin("plugin.spring") version "1.3.71"
 	kotlin("plugin.jpa") version "1.3.71"
@@ -44,6 +45,7 @@ dependencies {
 	implementation("org.hibernate:hibernate-java8")
 	runtimeOnly("com.h2database:h2")
 	runtimeOnly("mysql:mysql-connector-java:8.0.17")
+	runtimeOnly("org.flywaydb:flyway-core:5.2.0")
 }
 
 tasks.withType<Test> {
@@ -56,4 +58,11 @@ tasks.withType<KotlinCompile> {
 		freeCompilerArgs = listOf("-Xjsr305=strict")
 		jvmTarget = "1.8"
 	}
+}
+
+flyway {
+	url = "jdbc:mysql://localhost:13306/archive?serverTimezone=UTC&allowPublicKeyRetrieval=true&useSSL=false&useUnicode=yes&characterEncoding=UTF-8"
+	user = "user"
+	password = "password"
+	schemas = arrayOf("archive")
 }
