@@ -1,4 +1,4 @@
-package camp.nextstep
+package com.woowacourse
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication

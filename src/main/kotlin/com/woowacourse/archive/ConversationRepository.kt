@@ -1,4 +1,4 @@
-package camp.nextstep.archive
+package com.woowacourse.archive
 
 import org.springframework.data.jpa.repository.JpaRepository
 

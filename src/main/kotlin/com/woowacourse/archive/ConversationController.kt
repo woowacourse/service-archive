@@ -1,4 +1,4 @@
-package camp.nextstep.archive
+package com.woowacourse.archive
 
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping

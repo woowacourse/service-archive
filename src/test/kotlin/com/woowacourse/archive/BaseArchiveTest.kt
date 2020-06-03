@@ -1,7 +1,7 @@
-package camp.nextstep.archive
+package com.woowacourse.archive
 
-import camp.nextstep.slack.DateTimeConverter.toLocalDateTime
-import camp.nextstep.slack.Message
+import com.woowacourse.slack.DateTimeConverter.toLocalDateTime
+import com.woowacourse.slack.Message
 import org.junit.jupiter.api.BeforeEach
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
@@ -18,14 +18,35 @@ abstract class BaseArchiveTest {
         val userId = "USU9TR4HM"
         val conversationTime = toLocalDateTime("1588828683.270200")
 
-        conversation = Conversation(message, userId, conversationTime)
+        conversation = Conversation(
+            message,
+            userId,
+            conversationTime
+        )
 
-        messages.add(Message("답변", "USDLAAJBU", "1588828683.270200"))
-        messages.add(Message("답변2", "USDLAABCD", "1588828684.270200"))
+        messages.add(
+            Message(
+                "답변",
+                "USDLAAJBU",
+                "1588828683.270200"
+            )
+        )
+        messages.add(
+            Message(
+                "답변2",
+                "USDLAABCD",
+                "1588828684.270200"
+            )
+        )
     }
 
     fun assemble(message: Message): Reply {
-        return Reply(conversation, message.text, message.user, toLocalDateTime(message.ts))
+        return Reply(
+            conversation,
+            message.text,
+            message.user,
+            toLocalDateTime(message.ts)
+        )
     }
 }
 

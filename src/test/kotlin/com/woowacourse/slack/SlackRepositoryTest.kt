@@ -1,8 +1,8 @@
-package camp.nextstep.slack
+package com.woowacourse.slack
 
-import camp.nextstep.slack.DateTimeConverter.toTimestamp
-import camp.nextstep.slack.Mapper.toHistory
-import camp.nextstep.slack.UrlFormatter.make
+import com.woowacourse.slack.DateTimeConverter.toTimestamp
+import com.woowacourse.slack.Mapper.toHistory
+import com.woowacourse.slack.UrlFormatter.make
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test

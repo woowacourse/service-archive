@@ -1,4 +1,4 @@
-package camp.nextstep.slack
+package com.woowacourse.slack
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
@@ -32,7 +32,14 @@ data class Conversations(
 ) {
     fun add(message: Message, history: History) {
         if (history.exist()) {
-            conversations.add(Conversation(message.text, message.user, message.ts, history))
+            conversations.add(
+                Conversation(
+                    message.text,
+                    message.user,
+                    message.ts,
+                    history
+                )
+            )
         }
     }
 

@@ -1,4 +1,4 @@
-package camp.nextstep.http
+package com.woowacourse.http
 
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod

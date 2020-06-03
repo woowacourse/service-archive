@@ -1,13 +1,13 @@
-package camp.nextstep.slack
+package com.woowacourse.slack
 
-import camp.nextstep.http.Rest
-import camp.nextstep.slack.DateTimeConverter.toTimestamp
-import camp.nextstep.slack.Mapper.toHistory
-import camp.nextstep.slack.Mapper.toUser
-import camp.nextstep.slack.UrlFormatter.make
 import ch.qos.logback.core.CoreConstants.EMPTY_STRING
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.woowacourse.http.Rest
+import com.woowacourse.slack.DateTimeConverter.toTimestamp
+import com.woowacourse.slack.Mapper.toHistory
+import com.woowacourse.slack.Mapper.toUser
+import com.woowacourse.slack.UrlFormatter.make
 import mu.KotlinLogging
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.*
@@ -71,7 +71,9 @@ object DateTimeConverter {
 
     fun toTimestamp(datetime: String): String {
         TimeZone.setDefault(TimeZone.getTimeZone(TIME_ZONE))
-        return toTimestampByString(datetime)
+        return toTimestampByString(
+            datetime
+        )
     }
 
     private fun convert(timestamp: String): Timestamp {
@@ -102,7 +104,7 @@ class Url(
     private val ts: String,
     private val oldest: String
 ) {
-    fun get() = "${HOST}${api}?token=${token}${getChannel()}${getTs()}${getOldest()}"
+    fun get() = "$HOST${api}?token=${token}${getChannel()}${getTs()}${getOldest()}"
 
     private fun getChannel(): String =
         if (channel.isNullOrBlank()) EMPTY_STRING else "&channel=$channel"
