@@ -1,6 +1,5 @@
 package camp.nextstep.slack
 
-import camp.nextstep.slack.DateTimeConverter.toLocalDateTime
 import camp.nextstep.slack.DateTimeConverter.toTimestamp
 import camp.nextstep.slack.Mapper.toHistory
 import camp.nextstep.slack.UrlFormatter.make
@@ -46,15 +45,33 @@ class SlackRepositoryTest {
 
     @Test
     fun `Slack 특정 채널의 히스토리를 조회한다`() {
-        val response = toHistory(slackRepository.request(make(API_HISTORY, userToken, channel = channel)))
+        val response =
+            toHistory(slackRepository.request(make(API_HISTORY, userToken, channel = channel)))
 
         assertThat(response.exist()).isTrue()
     }
 
     @Test
     fun `특정 시점 이후의 Slack 특정 채널의 히스토리를 조회한다`() {
-        val secondMessage = toHistory(slackRepository.request(make(API_HISTORY, userToken, channel = channel))).messages[1]
-        val latest = toHistory(slackRepository.request(make(API_HISTORY, userToken, channel = channel, oldest = secondMessage.ts)))
+        val secondMessage = toHistory(
+            slackRepository.request(
+                make(
+                    API_HISTORY,
+                    userToken,
+                    channel = channel
+                )
+            )
+        ).messages[1]
+        val latest = toHistory(
+            slackRepository.request(
+                make(
+                    API_HISTORY,
+                    userToken,
+                    channel = channel,
+                    oldest = secondMessage.ts
+                )
+            )
+        )
 
         assertThat(latest.exist()).isTrue()
         assertThat(latest.messages.size).isEqualTo(1)
@@ -62,8 +79,18 @@ class SlackRepositoryTest {
 
     @Test
     fun `Slack 특정 채널의 특정 시간대 Thread를 조회한다`() {
-        val history = toHistory(slackRepository.request(make(API_HISTORY, userToken, channel = channel)))
-        val answers = toHistory(slackRepository.request(make(API_REPLY, userToken, channel, history.messages[0].ts)))
+        val history =
+            toHistory(slackRepository.request(make(API_HISTORY, userToken, channel = channel)))
+        val answers = toHistory(
+            slackRepository.request(
+                make(
+                    API_REPLY,
+                    userToken,
+                    channel,
+                    history.messages[0].ts
+                )
+            )
+        )
 
         assertThat(answers.exist()).isTrue()
     }
@@ -83,20 +110,11 @@ class SlackRepositoryTest {
     }
 
     @Test
-    fun `Slack Timestamp to LocalDateTime with Nanoseconds`() {
-        val timeStamp = "1589190185.365123"
-        val expected = "2020-05-11T18:43:05.365123"
-        val actual = toLocalDateTime(timeStamp)
-
-        assertThat(actual).isEqualTo(expected)
-    }
-
-    @Test
     fun `LocalDateTime to Slack Timestamp`() {
         val datetime = "2020-05-11T18:43:05.365123"
         val expected = "1589190185.365123"
-
         val actual = toTimestamp(datetime)
+
         assertThat(actual).isEqualTo(expected)
     }
 }
