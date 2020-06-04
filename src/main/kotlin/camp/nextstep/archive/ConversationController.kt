@@ -2,6 +2,7 @@ package camp.nextstep.archive
 
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
@@ -13,7 +14,7 @@ class ConversationController(
         return ResponseEntity.ok(conversationService.retrieve())
     }
 
-    @GetMapping("/archive")
+    @PostMapping("/conversations")
     fun archiveManually(): ResponseEntity<Unit> {
         conversationService.archive()
         return ResponseEntity.ok().build()
