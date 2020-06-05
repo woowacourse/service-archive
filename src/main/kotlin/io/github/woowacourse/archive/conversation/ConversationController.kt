@@ -1,6 +1,5 @@
 package io.github.woowacourse.archive.conversation
 
-import io.github.woowacourse.archive.dto.ConversationDto
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping

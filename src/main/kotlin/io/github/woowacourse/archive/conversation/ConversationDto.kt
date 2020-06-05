@@ -1,7 +1,5 @@
-package io.github.woowacourse.archive.dto
+package io.github.woowacourse.archive.conversation
 
-import io.github.woowacourse.archive.conversation.Conversation
-import io.github.woowacourse.archive.conversation.Reply
 import java.time.LocalDateTime
 
 data class ConversationDto(
