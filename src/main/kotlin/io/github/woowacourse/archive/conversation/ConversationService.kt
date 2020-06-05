@@ -6,7 +6,6 @@ import io.github.woowacourse.archive.slack.Message
 import io.github.woowacourse.archive.slack.SlackService
 import mu.KotlinLogging
 import org.springframework.stereotype.Service
-import java.util.stream.Collectors.toList
 
 const val INITIAL_INDEX = 1
 
@@ -36,9 +35,9 @@ class ConversationService(
 
     private fun toList(conversations: Conversations): List<Conversation> {
         return conversations
-                .conversations.stream()
+                .conversations.asSequence()
                 .map { to(it) }
-                .collect(toList())
+                .toList()
     }
 
     private fun to(it: io.github.woowacourse.archive.slack.Conversation): Conversation {
@@ -54,9 +53,9 @@ class ConversationService(
     private fun assemble(conversation: Conversation, messages: List<Message>): MutableList<Reply> {
         return messages
                 .subList(INITIAL_INDEX, messages.size)
-                .stream()
+                .asSequence()
                 .map { assemble(conversation, it) }
-                .collect(toList())
+                .toMutableList()
     }
 
     private fun assemble(conversation: Conversation, message: Message): Reply {
