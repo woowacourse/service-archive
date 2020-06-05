@@ -1,12 +1,11 @@
-package camp.nextstep.archive
+package io.github.woowacourse.archive.conversation
 
-import camp.nextstep.slack.Conversations
-import camp.nextstep.slack.DateTimeConverter.toLocalDateTime
-import camp.nextstep.slack.Message
-import camp.nextstep.slack.SlackService
+import io.github.woowacourse.archive.slack.Conversations
+import io.github.woowacourse.archive.slack.DateTimeConverter.toLocalDateTime
+import io.github.woowacourse.archive.slack.Message
+import io.github.woowacourse.archive.slack.SlackService
 import mu.KotlinLogging
 import org.springframework.stereotype.Service
-import java.util.stream.Collectors.toList
 
 const val INITIAL_INDEX = 1
 
@@ -17,9 +16,7 @@ class ConversationService(
         private val repository: ConversationRepository,
         private val slackService: SlackService
 ) {
-    fun archive(): List<Conversation> {
-        return save(retrieve())
-    }
+    fun archive(): List<Conversation> = save(retrieve())
 
     fun retrieve(): List<Conversation> = repository.findAllByOrderByConversationTime()
 
@@ -33,20 +30,22 @@ class ConversationService(
     private fun getLastConversationTime(savedConversations: List<Conversation>) =
             savedConversations[savedConversations.size - 1].conversationTime.toString()
 
-    private fun saveAll(conversations: Conversations): MutableList<Conversation> {
-        return repository.saveAll(toList(conversations))
-    }
+    private fun saveAll(conversations: Conversations): MutableList<Conversation> =
+            repository.saveAll(toList(conversations))
 
     private fun toList(conversations: Conversations): List<Conversation> {
         return conversations
-                .conversations
-                .stream()
+                .conversations.asSequence()
                 .map { to(it) }
-                .collect(toList())
+                .toList()
     }
 
-    private fun to(it: camp.nextstep.slack.Conversation): Conversation {
-        val conversation = Conversation(it.message, it.user, toLocalDateTime(it.ts))
+    private fun to(it: io.github.woowacourse.archive.slack.Conversation): Conversation {
+        val conversation = Conversation(
+                it.message,
+                it.user,
+                toLocalDateTime(it.ts)
+        )
         conversation.addAll(assemble(conversation, it.thread.messages))
         return conversation
     }
@@ -54,12 +53,17 @@ class ConversationService(
     private fun assemble(conversation: Conversation, messages: List<Message>): MutableList<Reply> {
         return messages
                 .subList(INITIAL_INDEX, messages.size)
-                .stream()
+                .asSequence()
                 .map { assemble(conversation, it) }
-                .collect(toList())
+                .toMutableList()
     }
 
     private fun assemble(conversation: Conversation, message: Message): Reply {
-        return Reply(conversation, message.text, message.user, toLocalDateTime(message.ts))
+        return Reply(
+                conversation,
+                message.text,
+                message.user,
+                toLocalDateTime(message.ts)
+        )
     }
 }

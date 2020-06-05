@@ -1,4 +1,4 @@
-package camp.nextstep.slack
+package io.github.woowacourse.archive.slack
 
 const val CONDITION_TRUE = "true"
 

@@ -1,6 +1,6 @@
-package camp.nextstep.archive
+package io.github.woowacourse.archive.conversation
 
-import camp.nextstep.slack.DateTimeConverter.toLocalDateTime
+import io.github.woowacourse.archive.slack.DateTimeConverter.toLocalDateTime
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -11,18 +11,33 @@ class ConversationTest {
 
     @Test
     fun `대화 객체를 생성한다`() {
-        val conversation = Conversation(message, userId, conversationTime)
+        val conversation = Conversation(
+                message,
+                userId,
+                conversationTime
+        )
 
         assertThat(conversation.message).isNotNull()
     }
 
     @Test
     fun `대화에 응답을 추가한다`() {
-        val conversation = Conversation(message, userId, conversationTime)
+        val conversation = Conversation(
+                message,
+                userId,
+                conversationTime
+        )
         val text = "답변"
         val user = "USDLAAJBU"
         val ts = "1588828683.270200"
-        conversation.add(Reply(conversation, text, user, toLocalDateTime(ts)))
+        conversation.add(
+                Reply(
+                        conversation,
+                        text,
+                        user,
+                        toLocalDateTime(ts)
+                )
+        )
 
         assertThat(conversation.replies.size).isEqualTo(1)
     }

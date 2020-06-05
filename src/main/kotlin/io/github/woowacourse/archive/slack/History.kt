@@ -1,4 +1,4 @@
-package camp.nextstep.slack
+package io.github.woowacourse.archive.slack
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
@@ -10,7 +10,7 @@ data class History(
 
         @JsonProperty("messages")
         val messages: List<Message> = mutableListOf()
-) : Slack{
+) : Slack {
     override fun exist() = status == CONDITION_TRUE
 }
 
@@ -32,7 +32,14 @@ data class Conversations(
 ) {
     fun add(message: Message, history: History) {
         if (history.exist()) {
-            conversations.add(Conversation(message.text, message.user, message.ts, history))
+            conversations.add(
+                    Conversation(
+                            message.text,
+                            message.user,
+                            message.ts,
+                            history
+                    )
+            )
         }
     }
 

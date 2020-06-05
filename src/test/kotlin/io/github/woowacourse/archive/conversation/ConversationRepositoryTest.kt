@@ -1,4 +1,4 @@
-package camp.nextstep.archive
+package io.github.woowacourse.archive.conversation
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test

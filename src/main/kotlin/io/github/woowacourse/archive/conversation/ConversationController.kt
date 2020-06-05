@@ -1,4 +1,4 @@
-package camp.nextstep.archive
+package io.github.woowacourse.archive.conversation
 
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
@@ -10,8 +10,9 @@ class ConversationController(
         private val conversationService: ConversationService
 ) {
     @GetMapping("/conversations")
-    fun retrieve(): ResponseEntity<List<Conversation>> {
-        return ResponseEntity.ok(conversationService.retrieve())
+    fun retrieve(): ResponseEntity<List<ConversationDto>> {
+        val conversationDtos = ConversationDto.listOf(conversationService.retrieve())
+        return ResponseEntity.ok(conversationDtos)
     }
 
     @PostMapping("/conversations")
@@ -20,4 +21,3 @@ class ConversationController(
         return ResponseEntity.ok().build()
     }
 }
-

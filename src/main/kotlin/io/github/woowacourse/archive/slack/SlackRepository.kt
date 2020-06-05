@@ -1,13 +1,13 @@
-package camp.nextstep.slack
+package io.github.woowacourse.archive.slack
 
-import camp.nextstep.http.Rest
-import camp.nextstep.slack.DateTimeConverter.toTimestamp
-import camp.nextstep.slack.Mapper.toHistory
-import camp.nextstep.slack.Mapper.toUser
-import camp.nextstep.slack.UrlFormatter.make
 import ch.qos.logback.core.CoreConstants.EMPTY_STRING
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import io.github.woowacourse.archive.http.Rest
+import io.github.woowacourse.archive.slack.DateTimeConverter.toTimestamp
+import io.github.woowacourse.archive.slack.Mapper.toHistory
+import io.github.woowacourse.archive.slack.Mapper.toUser
+import io.github.woowacourse.archive.slack.UrlFormatter.make
 import mu.KotlinLogging
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.*
@@ -35,7 +35,8 @@ class SlackRepository {
     lateinit var slackRest: SlackRest
 
     fun retrieve(token: String, channel: String, oldest: String = EMPTY_STRING): Conversations {
-        val history = toHistory(request(make(API_HISTORY, token, channel, oldest = toTimestamp(oldest))))
+        val history =
+                toHistory(request(make(API_HISTORY, token, channel, oldest = toTimestamp(oldest))))
         return retrieveAnswers(history, token, channel)
     }
 
@@ -70,7 +71,9 @@ object DateTimeConverter {
 
     fun toTimestamp(datetime: String): String {
         TimeZone.setDefault(TimeZone.getTimeZone(TIME_ZONE))
-        return toTimestampByString(datetime)
+        return toTimestampByString(
+                datetime
+        )
     }
 
     private fun convert(timestamp: String): Timestamp {
@@ -101,15 +104,24 @@ class Url(
         private val ts: String,
         private val oldest: String
 ) {
-    fun get() = "${HOST}${api}?token=${token}${getChannel()}${getTs()}${getOldest()}"
+    fun get() = "$HOST${api}?token=${token}${getChannel()}${getTs()}${getOldest()}"
 
-    private fun getChannel(): String = if (channel.isNullOrBlank()) EMPTY_STRING else "&channel=$channel"
+    private fun getChannel(): String =
+            if (channel.isNullOrBlank()) EMPTY_STRING else "&channel=$channel"
+
     private fun getTs(): String = if (ts.isNullOrBlank()) EMPTY_STRING else "&ts=$ts"
-    private fun getOldest(): String = if (oldest.isNullOrBlank()) EMPTY_STRING else "&oldest=$oldest"
+    private fun getOldest(): String =
+            if (oldest.isNullOrBlank()) EMPTY_STRING else "&oldest=$oldest"
 }
 
 object UrlFormatter {
-    fun make(api: String, token: String, channel: String = EMPTY_STRING, ts: String = EMPTY_STRING, oldest: String = EMPTY_STRING): String {
+    fun make(
+            api: String,
+            token: String,
+            channel: String = EMPTY_STRING,
+            ts: String = EMPTY_STRING,
+            oldest: String = EMPTY_STRING
+    ): String {
         return Url(api, token, channel, ts, oldest).get()
     }
 }
@@ -123,10 +135,12 @@ object Mapper {
 
 @Component
 class SlackRest : Rest<MultiValueMap<String, String>> {
-    override fun request(method: HttpMethod,
-                         url: String,
-                         contents: MultiValueMap<String, String>?,
-                         headers: HttpHeaders): ResponseEntity<String> {
+    override fun request(
+            method: HttpMethod,
+            url: String,
+            contents: MultiValueMap<String, String>?,
+            headers: HttpHeaders
+    ): ResponseEntity<String> {
         logger.debug("request url : {}, params : {}", url, contents)
         return RestTemplate().exchange(
                 url,
