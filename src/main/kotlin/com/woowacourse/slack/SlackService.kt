@@ -1,4 +1,4 @@
-package camp.nextstep.slack
+package com.woowacourse.slack
 
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.context.annotation.Configuration
@@ -18,5 +18,6 @@ class SlackService(
         private val properties: SlackProperties
 ) {
     fun retrieve() = repository.retrieve(properties.userToken, properties.channel)
-    fun retrieve(oldest: String) = repository.retrieve(properties.userToken, properties.channel, oldest)
+    fun retrieve(oldest: String) =
+            repository.retrieve(properties.userToken, properties.channel, oldest)
 }

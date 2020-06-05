@@ -1,4 +1,4 @@
-package camp.nextstep.archive
+package com.woowacourse.archive
 
 import com.fasterxml.jackson.annotation.JsonBackReference
 import com.fasterxml.jackson.annotation.JsonManagedReference
