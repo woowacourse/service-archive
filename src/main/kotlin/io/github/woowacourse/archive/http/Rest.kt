@@ -1,4 +1,4 @@
-package com.woowacourse.http
+package io.github.woowacourse.archive.http
 
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod

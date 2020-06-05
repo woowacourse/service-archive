@@ -1,13 +1,13 @@
-package com.woowacourse.slack
+package io.github.woowacourse.archive.slack
 
 import ch.qos.logback.core.CoreConstants.EMPTY_STRING
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.woowacourse.http.Rest
-import com.woowacourse.slack.DateTimeConverter.toTimestamp
-import com.woowacourse.slack.Mapper.toHistory
-import com.woowacourse.slack.Mapper.toUser
-import com.woowacourse.slack.UrlFormatter.make
+import io.github.woowacourse.archive.http.Rest
+import io.github.woowacourse.archive.slack.DateTimeConverter.toTimestamp
+import io.github.woowacourse.archive.slack.Mapper.toHistory
+import io.github.woowacourse.archive.slack.Mapper.toUser
+import io.github.woowacourse.archive.slack.UrlFormatter.make
 import mu.KotlinLogging
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.*

@@ -1,7 +1,7 @@
-package com.woowacourse.archive
+package io.github.woowacourse.archive.conversation
 
-import com.woowacourse.slack.DateTimeConverter.toLocalDateTime
-import com.woowacourse.slack.Message
+import io.github.woowacourse.archive.slack.DateTimeConverter.toLocalDateTime
+import io.github.woowacourse.archive.slack.Message
 import org.junit.jupiter.api.BeforeEach
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles

@@ -1,9 +1,9 @@
-package com.woowacourse.archive
+package io.github.woowacourse.archive.conversation
 
-import com.woowacourse.slack.Conversations
-import com.woowacourse.slack.DateTimeConverter.toLocalDateTime
-import com.woowacourse.slack.Message
-import com.woowacourse.slack.SlackService
+import io.github.woowacourse.archive.slack.Conversations
+import io.github.woowacourse.archive.slack.DateTimeConverter.toLocalDateTime
+import io.github.woowacourse.archive.slack.Message
+import io.github.woowacourse.archive.slack.SlackService
 import mu.KotlinLogging
 import org.springframework.stereotype.Service
 import java.util.stream.Collectors.toList
@@ -41,7 +41,7 @@ class ConversationService(
                 .collect(toList())
     }
 
-    private fun to(it: com.woowacourse.slack.Conversation): Conversation {
+    private fun to(it: io.github.woowacourse.archive.slack.Conversation): Conversation {
         val conversation = Conversation(
                 it.message,
                 it.user,

@@ -1,6 +1,6 @@
-package com.woowacourse.archive
+package io.github.woowacourse.archive.conversation
 
-import com.woowacourse.slack.DateTimeConverter.toLocalDateTime
+import io.github.woowacourse.archive.slack.DateTimeConverter.toLocalDateTime
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 

@@ -1,8 +1,8 @@
-package com.woowacourse.slack
+package io.github.woowacourse.archive.slack
 
-import com.woowacourse.slack.DateTimeConverter.toTimestamp
-import com.woowacourse.slack.Mapper.toHistory
-import com.woowacourse.slack.UrlFormatter.make
+import io.github.woowacourse.archive.slack.DateTimeConverter.toTimestamp
+import io.github.woowacourse.archive.slack.Mapper.toHistory
+import io.github.woowacourse.archive.slack.UrlFormatter.make
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test

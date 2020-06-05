@@ -1,4 +1,4 @@
-package com.woowacourse.slack
+package io.github.woowacourse.archive.slack
 
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.context.annotation.Configuration

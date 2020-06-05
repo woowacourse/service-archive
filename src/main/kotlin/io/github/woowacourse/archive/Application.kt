@@ -1,4 +1,4 @@
-package com.woowacourse
+package io.github.woowacourse.archive
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
