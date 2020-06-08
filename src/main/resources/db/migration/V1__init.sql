@@ -1,19 +1,19 @@
 create table conversation (
-    id bigint not null,
+    id bigint AUTO_INCREMENT not null,
     created_date datetime not null,
     updated_date datetime not null,
     conversation_time datetime,
-    message longblob,
+    message longtext,
     user_id varchar(255),
     primary key (id)
 );
 
 
 create table reply (
-    id bigint not null,
+    id bigint AUTO_INCREMENT not null,
     created_date datetime not null,
     updated_date datetime not null,
-    message longblob,
+    message longtext,
     reply_time datetime,
     user_id varchar(255),
     conversation_id bigint,
