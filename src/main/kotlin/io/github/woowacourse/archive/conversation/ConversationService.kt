@@ -64,7 +64,8 @@ class ConversationService(
                 conversation,
                 message.text,
                 message.user,
-                toLocalDateTime(message.ts)
+                toLocalDateTime(message.ts),
+                message.files.map{File(it.urlPrivate)}
         )
     }
 }

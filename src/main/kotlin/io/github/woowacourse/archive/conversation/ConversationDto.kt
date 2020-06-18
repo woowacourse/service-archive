@@ -31,6 +31,7 @@ data class ReplyDto(
         val message: String,
         val userId: String,
         val replyTime: LocalDateTime,
+        val files: List<String>,
         val id: Long
 ) {
     constructor(reply: Reply) :
@@ -38,12 +39,13 @@ data class ReplyDto(
                     reply.message,
                     reply.userId,
                     reply.replyTime,
+                    reply.files.map{ it.url },
                     reply.id
             )
 
     companion object {
         fun listOf(replies: List<Reply>): List<ReplyDto> {
-            return replies.map { ReplyDto(it) }
+            return replies.map{ ReplyDto(it) }
         }
     }
 }

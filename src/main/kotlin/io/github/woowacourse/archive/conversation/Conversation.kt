@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonManagedReference
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
-import sun.security.krb5.internal.ReplayCache
 import java.time.LocalDateTime
 import javax.persistence.*
 
@@ -65,6 +64,10 @@ class Reply(
         val message: String,
         val userId: String,
         val replyTime: LocalDateTime,
+
+        @ElementCollection
+        @CollectionTable(name = "REPLY_FILE")
+        val files: List<File> = listOf(),
 
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
