@@ -7,6 +7,7 @@ data class ConversationDto(
         val message: String,
         val userId: String,
         val conversationTime: LocalDateTime,
+        val files: List<String>,
         val replies: List<ReplyDto>
 ) {
     constructor(conversation: Conversation) :
@@ -15,6 +16,7 @@ data class ConversationDto(
                     conversation.message,
                     conversation.userId,
                     conversation.conversationTime,
+                    conversation.files.map{ it.url },
                     ReplyDto.listOf(conversation.replies)
             )
 

@@ -57,8 +57,9 @@ data class Conversation(
         val thread: History
 )
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 data class File(
-        val id: Long,
+        val id: String,
         val name: String,
         @JsonProperty("url_private")
         val urlPrivate: String
