@@ -44,7 +44,8 @@ class ConversationService(
         val conversation = Conversation(
                 it.message,
                 it.user,
-                toLocalDateTime(it.ts)
+                toLocalDateTime(it.ts),
+                it.files.map{File(it.urlPrivate)}
         )
         conversation.addAll(assemble(conversation, it.thread.messages))
         return conversation

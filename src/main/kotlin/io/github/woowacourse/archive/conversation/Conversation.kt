@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
+import sun.security.krb5.internal.ReplayCache
 import java.time.LocalDateTime
 import javax.persistence.*
 
@@ -31,6 +32,10 @@ class Conversation(
 
         @Column(unique = true)
         val conversationTime: LocalDateTime,
+
+        @ElementCollection
+        @CollectionTable(name = "CONVERSATION_FILE")
+        val files: List<File> = listOf(),
 
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -65,3 +70,8 @@ class Reply(
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         val id: Long = 0
 ) : BaseAuditEntity()
+
+@Embeddable
+data class File(
+        var url : String
+)

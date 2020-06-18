@@ -20,7 +20,9 @@ data class Message(
 
         val user: String = "",
 
-        val ts: String
+        val ts: String,
+
+        val files: List<File>
 ) {
     override fun toString(): String {
         return "user: $user, text: $text\n"
@@ -37,6 +39,7 @@ data class Conversations(
                             message.text,
                             message.user,
                             message.ts,
+                            message.files,
                             history
                     )
             )
@@ -50,5 +53,17 @@ data class Conversation(
         val message: String,
         val user: String,
         val ts: String,
+        val files: List<File>,
         val thread: History
 )
+
+data class File(
+        val id: Long,
+        val name: String,
+        @JsonProperty("url_private")
+        val urlPrivate: String
+) {
+    override fun toString(): String {
+        return "id: $id, name: $name, url: $urlPrivate"
+    }
+}
