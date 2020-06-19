@@ -28,14 +28,16 @@ abstract class BaseArchiveTest {
                 Message(
                         "답변",
                         "USDLAAJBU",
-                        "1588828683.270200"
+                        "1588828683.270200",
+                        emptyList()
                 )
         )
         messages.add(
                 Message(
                         "답변2",
                         "USDLAABCD",
-                        "1588828684.270200"
+                        "1588828684.270200",
+                        emptyList()
                 )
         )
     }
@@ -45,7 +47,8 @@ abstract class BaseArchiveTest {
                 conversation,
                 message.text,
                 message.user,
-                toLocalDateTime(message.ts)
+                toLocalDateTime(message.ts),
+                emptyList()
         )
     }
 }

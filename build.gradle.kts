@@ -16,6 +16,9 @@ extra["junit-jupiter.version"] = "5.4.2"
 
 repositories {
 	mavenCentral()
+	maven {
+		setUrl("https://repo.spring.io/libs-milestone")
+	}
 }
 
 dependencies {
@@ -27,6 +30,10 @@ dependencies {
 	// Log
 	implementation("net.logstash.logback:logstash-logback-encoder:6.1")
 	runtimeOnly("net.rakugakibox.spring.boot:logback-access-spring-boot-starter:2.7.1")
+
+	// Amazon
+	implementation("javax.xml.bind:jaxb-api")
+	implementation("org.springframework.cloud:spring-cloud-starter-aws")
 
 	// Kotlin
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
@@ -46,6 +53,12 @@ dependencies {
 	runtimeOnly("com.h2database:h2")
 	runtimeOnly("mysql:mysql-connector-java:8.0.17")
 	runtimeOnly("org.flywaydb:flyway-core:5.2.0")
+}
+
+dependencyManagement {
+	imports {
+		mavenBom("org.springframework.cloud:spring-cloud-aws:2.0.0.RC2")
+	}
 }
 
 tasks.withType<Test> {
