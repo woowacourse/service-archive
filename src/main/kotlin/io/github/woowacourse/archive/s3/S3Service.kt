@@ -1,7 +1,6 @@
 package io.github.woowacourse.archive.s3
 
 import com.amazonaws.services.s3.AmazonS3
-import com.amazonaws.services.s3.AmazonS3ClientBuilder
 import com.amazonaws.services.s3.model.CannedAccessControlList
 import com.amazonaws.services.s3.model.PutObjectRequest
 import org.springframework.stereotype.Service
@@ -10,10 +9,10 @@ import java.io.FileOutputStream
 import java.io.InputStream
 import java.net.URL
 
-
 @Service
-class S3Service {
-    val amazonS3: AmazonS3  = AmazonS3ClientBuilder.standard().withRegion("ap-northeast-2").build()
+class S3Service(
+        val amazonS3: AmazonS3
+) {
     fun upload(url: String, dirName: String, fileName: String): String {
         val file: File = File(fileName)
         copyInputStreamToFile(URL(url).openStream(), file)

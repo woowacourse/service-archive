@@ -22,7 +22,7 @@ data class Message(
 
         val ts: String,
 
-        val files: List<File>
+        val files: List<File> = emptyList()
 ) {
     override fun toString(): String {
         return "user: $user, text: $text\n"
