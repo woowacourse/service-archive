@@ -19,33 +19,33 @@ abstract class BaseArchiveTest {
         val conversationTime = toLocalDateTime("1588828683.270200")
 
         conversation = Conversation(
-                message,
-                userId,
-                conversationTime
+            message,
+            userId,
+            conversationTime
         )
 
         messages.add(
-                Message(
-                        "답변",
-                        "USDLAAJBU",
-                        "1588828683.270200"
-                )
+            Message(
+                "답변",
+                "USDLAAJBU",
+                "1588828683.270200"
+            )
         )
         messages.add(
-                Message(
-                        "답변2",
-                        "USDLAABCD",
-                        "1588828684.270200"
-                )
+            Message(
+                "답변2",
+                "USDLAABCD",
+                "1588828684.270200"
+            )
         )
     }
 
     fun assemble(message: Message): Reply {
         return Reply(
-                conversation,
-                message.text,
-                message.user,
-                toLocalDateTime(message.ts)
+            conversation,
+            message.text,
+            message.user,
+            toLocalDateTime(message.ts)
         )
     }
 }
