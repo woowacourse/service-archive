@@ -14,7 +14,8 @@ private val logger = KotlinLogging.logger { }
 @Service
 class ConversationService(
     private val repository: ConversationRepository,
-    private val slackService: SlackService
+    private val slackService: SlackService,
+    private val uploadService: UploadService
 ) {
     fun archive(): List<Conversation> = save(retrieve())
 
@@ -45,11 +46,15 @@ class ConversationService(
             it.message,
             it.user,
             toLocalDateTime(it.ts),
-            it.files.map{File(it.urlPrivate)}
+            toS3UrlFiles(it.files)
         )
         conversation.addAll(assemble(conversation, it.thread.messages))
         return conversation
     }
+
+    private fun toS3UrlFiles(files: List<io.github.woowacourse.archive.slack.File>) =
+        files.map { File(uploadService.upload(slackService.download(it.urlPrivate, "${it.id}-${it.name}"), "static")) }
+
     private fun assemble(conversation: Conversation, messages: List<Message>): MutableList<Reply> {
         return messages
             .subList(INITIAL_INDEX, messages.size)
@@ -64,7 +69,7 @@ class ConversationService(
             message.text,
             message.user,
             toLocalDateTime(message.ts),
-            message.files.map { File(it.urlPrivate) }
+            toS3UrlFiles(message.files)
         )
     }
 }
