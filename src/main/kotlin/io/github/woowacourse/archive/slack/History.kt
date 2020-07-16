@@ -1,6 +1,8 @@
 package io.github.woowacourse.archive.slack
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
+
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class History(
     @JsonProperty("ok")
@@ -40,6 +42,7 @@ data class Conversations(
             )
         }
     }
+
     fun exist(): Boolean = conversations.isNotEmpty()
 }
 
