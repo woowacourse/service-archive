@@ -12,6 +12,7 @@ import java.io.File
 @ConfigurationProperties("cloud.aws.s3")
 class CloudProperties {
     lateinit var bucket: String
+    lateinit var directory: String
 }
 
 @Service
@@ -19,8 +20,8 @@ class UploadService(
     val amazonS3: AmazonS3,
     private val properties: CloudProperties
 ) {
-    fun upload(file: File, dirName: String): String {
-        val filePath: String = dirName + "/" + file.name
+    fun upload(file: File): String {
+        val filePath: String = properties.directory + "/" + file.name
         val uploadUrl: String = save(file, filePath)
         return uploadUrl
     }

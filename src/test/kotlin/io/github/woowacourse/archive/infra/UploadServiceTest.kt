@@ -11,7 +11,8 @@ internal class UploadServiceTest @Autowired constructor(
 ) : IntegrationTest() {
     @Test
     fun `S3 이미지 upload 테스트`() {
-        val uploadedUrl = uploadService.upload(File("./upload_image.png"), "static")
+        val uploadedUrl =
+            uploadService.upload(File("src/test/resources/upload_image.png"))
         assertThat(uploadedUrl).contains("amazonaws.com")
     }
 }
