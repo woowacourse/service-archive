@@ -10,6 +10,8 @@ import org.springframework.context.annotation.Configuration
 class S3Client {
     @Bean
     fun getS3Client(): AmazonS3 {
-        return AmazonS3ClientBuilder.standard().withRegion(Regions.AP_NORTHEAST_2).build()
+        return AmazonS3ClientBuilder.standard()
+            .withRegion(Regions.AP_NORTHEAST_2)
+            .build()
     }
 }
