@@ -1,6 +1,6 @@
 package io.github.woowacourse.archive.conversation
 
-import io.github.woowacourse.archive.infra.UploadService
+import io.github.woowacourse.archive.aws.S3Uploader
 import io.github.woowacourse.archive.slack.Conversations
 import io.github.woowacourse.archive.slack.DateTimeConverter.toLocalDateTime
 import io.github.woowacourse.archive.slack.Message
@@ -15,7 +15,7 @@ private val logger = KotlinLogging.logger { }
 class ConversationService(
     private val repository: ConversationRepository,
     private val slackService: SlackService,
-    private val uploadService: UploadService
+    private val s3Uploader: S3Uploader
 ) {
     fun archive(): List<Conversation> = save(retrieve())
 
@@ -56,7 +56,7 @@ class ConversationService(
         val downloadFiles =
             files.map { slackService.download(it.urlPrivate, "${it.id}-${it.name}") }
         return downloadFiles.map {
-            val file = File(uploadService.upload(it))
+            val file = File(s3Uploader.upload(it))
             it.deleteOnExit()
             return listOf(file)
         }

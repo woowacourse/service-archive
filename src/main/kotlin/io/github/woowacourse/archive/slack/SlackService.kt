@@ -5,7 +5,6 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.stereotype.Service
 import java.io.File
 import java.io.FileOutputStream
-import java.io.InputStream
 import java.net.URL
 import java.net.URLConnection
 
@@ -21,8 +20,8 @@ class SlackProperties {
 
 @Service
 class SlackService(
-    private val repository: SlackRepository,
-    private val properties: SlackProperties
+        private val repository: SlackRepository,
+        private val properties: SlackProperties
 ) {
     companion object {
         private const val EOF = 0
@@ -32,23 +31,10 @@ class SlackService(
 
     fun retrieve() = repository.retrieve(properties.userToken, properties.channel)
     fun retrieve(oldest: String) =
-        repository.retrieve(properties.userToken, properties.channel, oldest)
+            repository.retrieve(properties.userToken, properties.channel, oldest)
 
     fun download(url: String, fileName: String): File {
-        val response = getInputStreamOfURL(url)
-        return copyInputStreamToFile(response, fileName)
-    }
-
-    private fun getInputStreamOfURL(url: String): InputStream {
-        val connection: URLConnection = URL(url).openConnection()
-        connection.setRequestProperty(
-            properties.tokenHeader,
-            "${properties.tokenType} ${properties.userToken}"
-        )
-        return connection.getInputStream()
-    }
-
-    private fun copyInputStreamToFile(inputStream: InputStream, fileName: String): File {
+        val inputStream = connect(url).getInputStream()
         val file = File(fileName)
         val outputStream = FileOutputStream(file)
         val bytes = ByteArray(BUFFER_SIZE)
@@ -58,5 +44,14 @@ class SlackService(
         }
 
         return file
+    }
+
+    private fun connect(url: String): URLConnection {
+        val connection: URLConnection = URL(url).openConnection()
+        connection.setRequestProperty(
+                properties.tokenHeader,
+                "${properties.tokenType} ${properties.userToken}"
+        )
+        return connection
     }
 }
