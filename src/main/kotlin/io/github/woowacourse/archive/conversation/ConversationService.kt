@@ -52,8 +52,15 @@ class ConversationService(
         return conversation
     }
 
-    private fun toS3UrlFiles(files: List<io.github.woowacourse.archive.slack.File>) =
-        files.map { File(uploadService.upload(slackService.download(it.urlPrivate, "${it.id}-${it.name}"), "static")) }
+    private fun toS3UrlFiles(files: List<io.github.woowacourse.archive.slack.File>): List<File> {
+        val downloadFiles =
+            files.map { slackService.download(it.urlPrivate, "${it.id}-${it.name}") }
+        return downloadFiles.map {
+            val file = File(uploadService.upload(it))
+            it.deleteOnExit()
+            return listOf(file)
+        }
+    }
 
     private fun assemble(conversation: Conversation, messages: List<Message>): MutableList<Reply> {
         return messages
