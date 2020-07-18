@@ -5,9 +5,9 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import io.github.woowacourse.archive.http.Rest
 import io.github.woowacourse.archive.slack.DateTimeConverter.toTimestamp
+import io.github.woowacourse.archive.slack.Formatter.url
 import io.github.woowacourse.archive.slack.Mapper.toHistory
 import io.github.woowacourse.archive.slack.Mapper.toUser
-import io.github.woowacourse.archive.slack.UrlFormatter.make
 import mu.KotlinLogging
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.*
@@ -36,20 +36,20 @@ class SlackRepository {
 
     fun retrieve(token: String, channel: String, oldest: String = EMPTY_STRING): Conversations {
         val history =
-                toHistory(request(make(API_HISTORY, token, channel, oldest = toTimestamp(oldest))))
+                toHistory(request(url(API_HISTORY, token, channel, oldest = toTimestamp(oldest))))
         return retrieveAnswers(history, token, channel)
     }
 
     fun retrieveAnswers(history: History, token: String, channel: String): Conversations {
         val conversations = Conversations()
         history.messages.forEach {
-            conversations.add(it, toHistory(request(make(API_REPLY, token, channel, it.ts))))
+            conversations.add(it, toHistory(request(url(API_REPLY, token, channel, it.ts))))
         }
         return conversations
     }
 
     fun retrieveUsers(token: String): User {
-        return toUser(request(make(API_USERS, token)))
+        return toUser(request(url(API_USERS, token)))
     }
 
     fun request(url: String): String? {
@@ -71,13 +71,12 @@ object DateTimeConverter {
 
     fun toTimestamp(datetime: String): String {
         TimeZone.setDefault(TimeZone.getTimeZone(TIME_ZONE))
-        return toTimestampByString(
-                datetime
-        )
+        return toTimestampByString(datetime)
     }
 
     private fun convert(timestamp: String): Timestamp {
-        val (dateTime, nanoSeconds) = timestamp.split(DELIMITER)
+        val (dateTime, nanoSeconds) = timestamp
+                .split(DELIMITER)
                 .map { it.toLong() }
 
         return Timestamp.from(Instant.ofEpochSecond(dateTime, nanoSeconds * NANO_ADJUSTMENT))
@@ -106,16 +105,16 @@ class Url(
 ) {
     fun get() = "$HOST${api}?token=${token}${getChannel()}${getTs()}${getOldest()}"
 
-    private fun getChannel(): String =
-            if (channel.isNullOrBlank()) EMPTY_STRING else "&channel=$channel"
+    private fun getChannel(): String = if (channel.isNullOrBlank()) EMPTY_STRING else "&channel=$channel"
 
     private fun getTs(): String = if (ts.isNullOrBlank()) EMPTY_STRING else "&ts=$ts"
+
     private fun getOldest(): String =
             if (oldest.isNullOrBlank()) EMPTY_STRING else "&oldest=$oldest"
 }
 
-object UrlFormatter {
-    fun make(
+object Formatter {
+    fun url(
             api: String,
             token: String,
             channel: String = EMPTY_STRING,
@@ -130,6 +129,7 @@ object Mapper {
     private val mapper: ObjectMapper = jacksonObjectMapper()
 
     fun toHistory(body: String?): History = mapper.readValue(body, History::class.java)
+
     fun toUser(body: String?): User = mapper.readValue(body, User::class.java)
 }
 
@@ -142,6 +142,7 @@ class SlackRest : Rest<MultiValueMap<String, String>> {
             headers: HttpHeaders
     ): ResponseEntity<String> {
         logger.debug("request url : {}, params : {}", url, contents)
+
         return RestTemplate().exchange(
                 url,
                 method,

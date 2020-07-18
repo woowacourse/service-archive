@@ -46,20 +46,16 @@ class ConversationService(
             it.message,
             it.user,
             toLocalDateTime(it.ts),
-            toS3UrlFiles(it.files)
+            fromSlackToS3(it.files)
         )
         conversation.addAll(assemble(conversation, it.thread.messages))
         return conversation
     }
 
-    private fun toS3UrlFiles(files: List<io.github.woowacourse.archive.slack.File>): List<File> {
-        val downloadFiles =
-            files.map { slackService.download(it.urlPrivate, "${it.id}-${it.name}") }
-        return downloadFiles.map {
-            val file = File(s3Uploader.upload(it))
-            it.deleteOnExit()
-            return listOf(file)
-        }
+    private fun fromSlackToS3(files: List<io.github.woowacourse.archive.slack.File>): List<File> {
+        val files = downloadFromSlack(files)
+
+        return uploadToS3(files)
     }
 
     private fun assemble(conversation: Conversation, messages: List<Message>): MutableList<Reply> {
@@ -76,7 +72,16 @@ class ConversationService(
             message.text,
             message.user,
             toLocalDateTime(message.ts),
-            toS3UrlFiles(message.files)
+            fromSlackToS3(message.files)
         )
     }
+
+    private fun uploadToS3(downloadFiles: List<java.io.File>): List<File> {
+        return downloadFiles
+                .map { File(s3Uploader.upload(it)) }
+                .toList()
+    }
+
+    private fun downloadFromSlack(files: List<io.github.woowacourse.archive.slack.File>) =
+            files.map { slackService.download(it.urlPrivate, "${it.name}") }
 }

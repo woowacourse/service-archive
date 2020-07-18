@@ -30,6 +30,7 @@ class SlackService(
     }
 
     fun retrieve() = repository.retrieve(properties.userToken, properties.channel)
+
     fun retrieve(oldest: String) =
             repository.retrieve(properties.userToken, properties.channel, oldest)
 
