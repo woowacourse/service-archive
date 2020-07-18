@@ -18,8 +18,6 @@ repositories {
 	mavenCentral()
 }
 
-extra["springCloudVersion"] = "Hoxton.SR6"
-
 dependencies {
 	// Spring
 	implementation("org.springframework.boot:spring-boot-starter")
@@ -52,14 +50,7 @@ dependencies {
 	runtimeOnly("org.flywaydb:flyway-core:5.2.0")
 
 	// AWS
-	implementation("org.springframework.cloud", "spring-cloud-starter-aws-parameter-store-config", "2.2.1.RELEASE")
-	implementation("com.amazonaws", "aws-java-sdk", "1.11.820")
-}
-
-dependencyManagement {
-	imports {
-		mavenBom("org.springframework.cloud:spring-cloud-dependencies:${property("springCloudVersion")}")
-	}
+	implementation("com.amazonaws", "aws-java-sdk-s3", "1.11.820")
 }
 
 tasks.withType<Test> {
