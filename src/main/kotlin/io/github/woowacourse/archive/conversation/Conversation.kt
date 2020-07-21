@@ -24,22 +24,21 @@ abstract class BaseAuditEntity protected constructor() {
 
 @Entity
 class Conversation(
-        @Lob
-        val message: String,
-
-        val userId: String,
-
-        @Column(unique = true)
-        val conversationTime: LocalDateTime,
-
-        @Id
-        @GeneratedValue(strategy = GenerationType.IDENTITY)
-        val id: Long = 0
+    @Lob
+    val message: String,
+    val userId: String,
+    @Column(unique = true)
+    val conversationTime: LocalDateTime,
+    @ElementCollection
+    @CollectionTable(name = "CONVERSATION_FILE")
+    val files: List<File> = listOf(),
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    val id: Long = 0
 ) : BaseAuditEntity() {
     @JsonManagedReference
     @OneToMany(mappedBy = "conversation", cascade = [CascadeType.MERGE, CascadeType.PERSIST])
     val replies: MutableList<Reply> = mutableListOf()
-
     fun add(reply: Reply) {
         replies.add(reply)
     }
@@ -51,17 +50,23 @@ class Conversation(
 
 @Entity
 class Reply(
-        @JsonBackReference
-        @ManyToOne
-        @JoinColumn(foreignKey = ForeignKey(name = "fk_reply_conversation"))
-        val conversation: Conversation,
-
-        @Lob
-        val message: String,
-        val userId: String,
-        val replyTime: LocalDateTime,
-
-        @Id
-        @GeneratedValue(strategy = GenerationType.IDENTITY)
-        val id: Long = 0
+    @JsonBackReference
+    @ManyToOne
+    @JoinColumn(foreignKey = ForeignKey(name = "fk_reply_conversation"))
+    val conversation: Conversation,
+    @Lob
+    val message: String,
+    val userId: String,
+    val replyTime: LocalDateTime,
+    @ElementCollection
+    @CollectionTable(name = "REPLY_FILE")
+    val files: List<File> = listOf(),
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    val id: Long = 0
 ) : BaseAuditEntity()
+
+@Embeddable
+data class File(
+    var url: String
+)

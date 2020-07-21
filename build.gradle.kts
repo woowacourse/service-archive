@@ -23,6 +23,7 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter")
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+	annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
 	// Log
 	implementation("net.logstash.logback:logstash-logback-encoder:6.1")
@@ -37,6 +38,7 @@ dependencies {
 	// Test
 	testImplementation("org.junit.jupiter:junit-jupiter")
 	testImplementation("org.springframework.boot:spring-boot-starter-test") {
+		exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
 		exclude(group = "junit")
 	}
 	testImplementation("org.assertj:assertj-core:3.12.2")
@@ -46,6 +48,9 @@ dependencies {
 	runtimeOnly("com.h2database:h2")
 	runtimeOnly("mysql:mysql-connector-java:8.0.17")
 	runtimeOnly("org.flywaydb:flyway-core:5.2.0")
+
+	// AWS
+	implementation("com.amazonaws", "aws-java-sdk-s3", "1.11.820")
 }
 
 tasks.withType<Test> {

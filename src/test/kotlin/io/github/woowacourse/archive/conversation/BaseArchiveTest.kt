@@ -7,7 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
 import javax.transaction.Transactional
 
-@ActiveProfiles("test")
+@ActiveProfiles(value = ["test"])
 abstract class BaseArchiveTest {
     lateinit var conversation: Conversation
     val messages = arrayListOf<Message>()

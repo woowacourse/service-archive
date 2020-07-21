@@ -5,40 +5,40 @@ import com.fasterxml.jackson.annotation.JsonProperty
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class History(
-        @JsonProperty("ok")
-        val status: String,
-
-        @JsonProperty("messages")
-        val messages: List<Message> = mutableListOf()
+    @JsonProperty("ok")
+    val status: String,
+    @JsonProperty("messages")
+    val messages: List<Message> = mutableListOf()
 ) : Slack {
     override fun exist() = status == CONDITION_TRUE
 }
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class Message(
-        val text: String,
-
-        val user: String = "",
-
-        val ts: String
+    val text: String,
+    val user: String = "",
+    val ts: String,
+    val files: List<File> = emptyList()
 ) {
     override fun toString(): String {
         return "user: $user, text: $text\n"
     }
 }
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 data class Conversations(
-        val conversations: MutableList<Conversation> = mutableListOf()
+    val conversations: MutableList<Conversation> = mutableListOf()
 ) {
     fun add(message: Message, history: History) {
         if (history.exist()) {
             conversations.add(
-                    Conversation(
-                            message.text,
-                            message.user,
-                            message.ts,
-                            history
-                    )
+                Conversation(
+                    message.text,
+                    message.user,
+                    message.ts,
+                    message.files,
+                    history
+                )
             )
         }
     }
@@ -46,9 +46,23 @@ data class Conversations(
     fun exist(): Boolean = conversations.isNotEmpty()
 }
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 data class Conversation(
-        val message: String,
-        val user: String,
-        val ts: String,
-        val thread: History
+    val message: String,
+    val user: String,
+    val ts: String,
+    val files: List<File>,
+    val thread: History
 )
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+data class File(
+    val id: String,
+    val name: String,
+    @JsonProperty("url_private")
+    val urlPrivate: String
+) {
+    override fun toString(): String {
+        return "id: $id, name: $name, url: $urlPrivate"
+    }
+}

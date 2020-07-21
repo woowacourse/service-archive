@@ -3,19 +3,21 @@ package io.github.woowacourse.archive.conversation
 import java.time.LocalDateTime
 
 data class ConversationDto(
-        val id: Long,
-        val message: String,
-        val userId: String,
-        val conversationTime: LocalDateTime,
-        val replies: List<ReplyDto>
+    val id: Long,
+    val message: String,
+    val userId: String,
+    val conversationTime: LocalDateTime,
+    val files: List<String>,
+    val replies: List<ReplyDto>
 ) {
     constructor(conversation: Conversation) :
             this(
-                    conversation.id,
-                    conversation.message,
-                    conversation.userId,
-                    conversation.conversationTime,
-                    ReplyDto.listOf(conversation.replies)
+                conversation.id,
+                conversation.message,
+                conversation.userId,
+                conversation.conversationTime,
+                conversation.files.map { it.url },
+                ReplyDto.listOf(conversation.replies)
             )
 
     companion object {
@@ -26,17 +28,19 @@ data class ConversationDto(
 }
 
 data class ReplyDto(
-        val message: String,
-        val userId: String,
-        val replyTime: LocalDateTime,
-        val id: Long
+    val message: String,
+    val userId: String,
+    val replyTime: LocalDateTime,
+    val files: List<String>,
+    val id: Long
 ) {
     constructor(reply: Reply) :
             this(
-                    reply.message,
-                    reply.userId,
-                    reply.replyTime,
-                    reply.id
+                reply.message,
+                reply.userId,
+                reply.replyTime,
+                reply.files.map { it.url },
+                reply.id
             )
 
     companion object {
