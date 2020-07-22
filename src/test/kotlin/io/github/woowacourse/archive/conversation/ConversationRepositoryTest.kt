@@ -1,8 +1,10 @@
 package io.github.woowacourse.archive.conversation
 
+import io.github.woowacourse.archive.slack.DateTimeConverter.toLocalDateTime
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.PageRequest
 
 class ConversationRepositoryTest @Autowired constructor(
         val conversationRepository: ConversationRepository
@@ -27,5 +29,16 @@ class ConversationRepositoryTest @Autowired constructor(
         val persistConversation = conversationRepository.save(conversation)
 
         assertThat(persistConversation.conversationTime).isEqualTo(conversation.conversationTime)
+    }
+
+    @Test
+    fun `특정 위치부터 개수만큼 조회`() {
+        conversationRepository.save(Conversation("1", "", toLocalDateTime("1588828683.270200")))
+        val pivot = conversationRepository.save(Conversation("2", "", toLocalDateTime("1588828683.270200")))
+        conversationRepository.save(Conversation("3", "", toLocalDateTime("1588828683.270200")))
+
+        val conversations = conversationRepository.findByIdLessThanOrderByIdDesc(pivot.id, PageRequest.of(0, 2))
+
+        assertThat(conversations.content[0].message).isEqualTo("1")
     }
 }

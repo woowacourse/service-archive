@@ -6,6 +6,8 @@ import io.github.woowacourse.archive.slack.DateTimeConverter.toLocalDateTime
 import io.github.woowacourse.archive.slack.Message
 import io.github.woowacourse.archive.slack.SlackService
 import mu.KotlinLogging
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 
 const val INITIAL_INDEX = 1
@@ -13,9 +15,9 @@ private val logger = KotlinLogging.logger { }
 
 @Service
 class ConversationService(
-    private val repository: ConversationRepository,
-    private val slackService: SlackService,
-    private val s3Uploader: S3Uploader
+        private val repository: ConversationRepository,
+        private val slackService: SlackService,
+        private val s3Uploader: S3Uploader
 ) {
     fun archive(): List<Conversation> = save(retrieve())
 
@@ -29,24 +31,24 @@ class ConversationService(
     }
 
     private fun getLastConversationTime(savedConversations: List<Conversation>) =
-        savedConversations[savedConversations.size - 1].conversationTime.toString()
+            savedConversations[savedConversations.size - 1].conversationTime.toString()
 
     private fun saveAll(conversations: Conversations): MutableList<Conversation> =
-        repository.saveAll(toList(conversations))
+            repository.saveAll(toList(conversations))
 
     private fun toList(conversations: Conversations): List<Conversation> {
         return conversations
-            .conversations.asSequence()
-            .map { to(it) }
-            .toList()
+                .conversations.asSequence()
+                .map { to(it) }
+                .toList()
     }
 
     private fun to(it: io.github.woowacourse.archive.slack.Conversation): Conversation {
         val conversation = Conversation(
-            it.message,
-            it.user,
-            toLocalDateTime(it.ts),
-            fromSlackToS3(it.files)
+                it.message,
+                it.user,
+                toLocalDateTime(it.ts),
+                fromSlackToS3(it.files)
         )
         conversation.addAll(assemble(conversation, it.thread.messages))
         return conversation
@@ -60,19 +62,19 @@ class ConversationService(
 
     private fun assemble(conversation: Conversation, messages: List<Message>): MutableList<Reply> {
         return messages
-            .subList(INITIAL_INDEX, messages.size)
-            .asSequence()
-            .map { assemble(conversation, it) }
-            .toMutableList()
+                .subList(INITIAL_INDEX, messages.size)
+                .asSequence()
+                .map { assemble(conversation, it) }
+                .toMutableList()
     }
 
     private fun assemble(conversation: Conversation, message: Message): Reply {
         return Reply(
-            conversation,
-            message.text,
-            message.user,
-            toLocalDateTime(message.ts),
-            fromSlackToS3(message.files)
+                conversation,
+                message.text,
+                message.user,
+                toLocalDateTime(message.ts),
+                fromSlackToS3(message.files)
         )
     }
 
@@ -83,5 +85,10 @@ class ConversationService(
     }
 
     private fun downloadFromSlack(files: List<io.github.woowacourse.archive.slack.File>) =
-            files.map { slackService.download(it.urlPrivate, "${it.name}") }
+            files.map { slackService.download(it.urlPrivate, it.name) }
+
+    fun retrieveSpecific(id: Long, size: Int): List<Conversation> {
+        val pageable: Pageable = PageRequest.of(0, size);
+        return repository.findByIdLessThanOrderByIdDesc(id, pageable).content;
+    }
 }
