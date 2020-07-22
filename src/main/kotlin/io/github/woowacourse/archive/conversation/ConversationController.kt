@@ -2,8 +2,8 @@ package io.github.woowacourse.archive.conversation
 
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
@@ -24,10 +24,10 @@ class ConversationController(
 
     @GetMapping("/conversations/search")
     fun retrieve(
-            @RequestParam("id") id: Long,
-            @RequestParam("size") size: Int
+            @ModelAttribute conversationRequestDto: ConversationRequestDto
     ): ResponseEntity<List<ConversationDto>> {
-        val conversationDtos = ConversationDto.listOf(conversationService.retrieveSpecific(id, size))
-        return ResponseEntity.ok(conversationDtos);
+        val (id, message, size) = conversationRequestDto
+        val conversationDtos = ConversationDto.listOf(conversationService.retrieveSpecific(id, message, size))
+        return ResponseEntity.ok(conversationDtos)
     }
 }

@@ -3,8 +3,13 @@ package io.github.woowacourse.archive.conversation
 import io.github.woowacourse.archive.slack.DateTimeConverter.toLocalDateTime
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertAll
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.Arguments
+import org.junit.jupiter.params.provider.MethodSource
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Pageable
 
 class ConversationRepositoryTest @Autowired constructor(
         val conversationRepository: ConversationRepository
@@ -31,14 +36,28 @@ class ConversationRepositoryTest @Autowired constructor(
         assertThat(persistConversation.conversationTime).isEqualTo(conversation.conversationTime)
     }
 
-    @Test
-    fun `특정 위치부터 개수만큼 조회`() {
+    @ParameterizedTest
+    @MethodSource("createMessageAndResult")
+    fun `특정 위치부터 개수만큼 조회`(message: String, size: Int, result: String) {
         conversationRepository.save(Conversation("1", "", toLocalDateTime("1588828683.270200")))
-        val pivot = conversationRepository.save(Conversation("2", "", toLocalDateTime("1588828683.270200")))
-        conversationRepository.save(Conversation("3", "", toLocalDateTime("1588828683.270200")))
+        conversationRepository.save(Conversation("2", "", toLocalDateTime("1588828683.270201")))
+        val pivot = conversationRepository.save(Conversation("3", "", toLocalDateTime("1588828683.270202")))
+        conversationRepository.save(Conversation("4", "", toLocalDateTime("1588828683.270203")))
+        val pageable: Pageable = PageRequest.of(0, 2);
 
-        val conversations = conversationRepository.findByIdLessThanOrderByIdDesc(pivot.id, PageRequest.of(0, 2))
+        val conversations = conversationRepository.findByConversationTimeLessThanAndMessageContainingOrderByConversationTimeDesc(pivot.conversationTime, message, pageable)
 
-        assertThat(conversations.content[0].message).isEqualTo("1")
+        assertAll("conversation",
+                { assertThat(conversations.content).hasSize(size) },
+                { assertThat(conversations.content[0].message).isEqualTo(result) }
+        )
+    }
+
+    companion object {
+        @JvmStatic
+        fun createMessageAndResult() = listOf(
+                Arguments.of("", 2, "2"),
+                Arguments.of("1", 1, "1")
+        )
     }
 }

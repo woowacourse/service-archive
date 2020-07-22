@@ -9,6 +9,7 @@ import mu.KotlinLogging
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
+import java.time.LocalDateTime
 
 const val INITIAL_INDEX = 1
 private val logger = KotlinLogging.logger { }
@@ -87,8 +88,8 @@ class ConversationService(
     private fun downloadFromSlack(files: List<io.github.woowacourse.archive.slack.File>) =
             files.map { slackService.download(it.urlPrivate, it.name) }
 
-    fun retrieveSpecific(id: Long, size: Int): List<Conversation> {
-        val pageable: Pageable = PageRequest.of(0, size);
-        return repository.findByIdLessThanOrderByIdDesc(id, pageable).content;
+    fun retrieveSpecific(conversationTime: LocalDateTime, message: String, size: Int): List<Conversation> {
+        val pageable: Pageable = PageRequest.of(0, size)
+        return repository.findByConversationTimeLessThanAndMessageContainingOrderByConversationTimeDesc(conversationTime, message, pageable).content
     }
 }
