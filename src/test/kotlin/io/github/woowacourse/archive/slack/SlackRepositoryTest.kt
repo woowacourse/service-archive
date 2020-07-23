@@ -2,8 +2,8 @@ package io.github.woowacourse.archive.slack
 
 import io.github.woowacourse.archive.conversation.IntegrationTest
 import io.github.woowacourse.archive.slack.DateTimeConverter.toTimestamp
-import io.github.woowacourse.archive.slack.Mapper.toHistory
 import io.github.woowacourse.archive.slack.Formatter.url
+import io.github.woowacourse.archive.slack.Mapper.toHistory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -43,7 +43,7 @@ class SlackRepositoryTest : IntegrationTest() {
     @Test
     fun `Slack 특정 채널의 히스토리를 조회한다`() {
         val response =
-                toHistory(slackRepository.request(url(API_HISTORY, userToken, channel = channel)))
+            toHistory(slackRepository.request(url(API_HISTORY, userToken, channel = channel)))
 
         assertThat(response.exist()).isTrue()
     }
@@ -51,23 +51,23 @@ class SlackRepositoryTest : IntegrationTest() {
     @Test
     fun `특정 시점 이후의 Slack 특정 채널의 히스토리를 조회한다`() {
         val secondMessage = toHistory(
-                slackRepository.request(
-                        url(
-                                API_HISTORY,
-                                userToken,
-                                channel = channel
-                        )
+            slackRepository.request(
+                url(
+                    API_HISTORY,
+                    userToken,
+                    channel = channel
                 )
+            )
         ).messages[1]
         val latest = toHistory(
-                slackRepository.request(
-                        url(
-                                API_HISTORY,
-                                userToken,
-                                channel = channel,
-                                oldest = secondMessage.ts
-                        )
+            slackRepository.request(
+                url(
+                    API_HISTORY,
+                    userToken,
+                    channel = channel,
+                    oldest = secondMessage.ts
                 )
+            )
         )
 
         assertThat(latest.exist()).isTrue()
@@ -77,16 +77,16 @@ class SlackRepositoryTest : IntegrationTest() {
     @Test
     fun `Slack 특정 채널의 특정 시간대 Thread를 조회한다`() {
         val history =
-                toHistory(slackRepository.request(url(API_HISTORY, userToken, channel = channel)))
+            toHistory(slackRepository.request(url(API_HISTORY, userToken, channel = channel)))
         val answers = toHistory(
-                slackRepository.request(
-                        url(
-                                API_REPLY,
-                                userToken,
-                                channel,
-                                history.messages[0].ts
-                        )
+            slackRepository.request(
+                url(
+                    API_REPLY,
+                    userToken,
+                    channel,
+                    history.messages[0].ts
                 )
+            )
         )
 
         assertThat(answers.exist()).isTrue()

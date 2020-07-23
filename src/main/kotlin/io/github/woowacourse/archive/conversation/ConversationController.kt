@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 class ConversationController(
-        private val conversationService: ConversationService
+    private val conversationService: ConversationService
 ) {
     @GetMapping("/conversations")
     fun retrieve(): ResponseEntity<List<ConversationDto>> {
@@ -24,7 +24,7 @@ class ConversationController(
 
     @GetMapping("/conversations/search")
     fun retrieve(
-            @ModelAttribute conversationRequestDto: ConversationRequestDto
+        @ModelAttribute conversationRequestDto: ConversationRequestDto
     ): ResponseEntity<List<ConversationDto>> {
         val (conversationTime, message, size) = conversationRequestDto
         val conversationDtos = ConversationDto.listOf(conversationService.retrieveSpecific(conversationTime, message, size))

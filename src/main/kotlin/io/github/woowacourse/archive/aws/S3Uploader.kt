@@ -18,17 +18,17 @@ class CloudProperties {
 
 @Component
 class S3Uploader(
-        private val properties: CloudProperties
+    private val properties: CloudProperties
 ) {
     private val amazonS3 = AmazonS3ClientBuilder
-            .standard()
-            .withRegion(AP_NORTHEAST_2)
-            .build()
+        .standard()
+        .withRegion(AP_NORTHEAST_2)
+        .build()
 
     fun upload(file: File, path: String = getFilePath()): String {
         amazonS3.putObject(
-                PutObjectRequest(properties.bucket, path, file)
-                        .withCannedAcl(CannedAccessControlList.PublicRead)
+            PutObjectRequest(properties.bucket, path, file)
+                .withCannedAcl(CannedAccessControlList.PublicRead)
         )
         return amazonS3.getUrl(properties.bucket, path).toString()
     }

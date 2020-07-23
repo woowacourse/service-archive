@@ -5,18 +5,18 @@ import com.fasterxml.jackson.annotation.JsonProperty
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class User(
-        @JsonProperty("ok")
-        val status: String,
+    @JsonProperty("ok")
+    val status: String,
 
-        @JsonProperty("members")
-        val members: List<Member> = mutableListOf()
+    @JsonProperty("members")
+    val members: List<Member> = mutableListOf()
 ) : Slack {
     override fun exist() = status == CONDITION_TRUE
 }
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class Member(
-        val id: String,
+    val id: String,
 
-        val name: String
+    val name: String
 )

@@ -20,8 +20,8 @@ class SlackProperties {
 
 @Service
 class SlackService(
-        private val repository: SlackRepository,
-        private val properties: SlackProperties
+    private val repository: SlackRepository,
+    private val properties: SlackProperties
 ) {
     companion object {
         private const val EOF = 0
@@ -32,7 +32,7 @@ class SlackService(
     fun retrieve() = repository.retrieve(properties.userToken, properties.channel)
 
     fun retrieve(oldest: String) =
-            repository.retrieve(properties.userToken, properties.channel, oldest)
+        repository.retrieve(properties.userToken, properties.channel, oldest)
 
     fun download(url: String, fileName: String): File {
         val inputStream = connect(url).getInputStream()
@@ -50,8 +50,8 @@ class SlackService(
     private fun connect(url: String): URLConnection {
         val connection: URLConnection = URL(url).openConnection()
         connection.setRequestProperty(
-                properties.tokenHeader,
-                "${properties.tokenType} ${properties.userToken}"
+            properties.tokenHeader,
+            "${properties.tokenType} ${properties.userToken}"
         )
         return connection
     }
