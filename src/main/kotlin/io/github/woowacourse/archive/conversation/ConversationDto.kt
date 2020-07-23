@@ -9,6 +9,29 @@ data class ConversationDto(
     val message: String,
     val userId: String,
     val conversationTime: LocalDateTime,
+    val files: List<String>
+) {
+    constructor(conversation: Conversation) :
+        this(
+            conversation.id,
+            conversation.message,
+            conversation.userId,
+            conversation.conversationTime,
+            conversation.files.map { it.url }
+        )
+
+    companion object {
+        fun listOf(conversations: List<Conversation>): List<ConversationDto> {
+            return conversations.map { ConversationDto(it) }
+        }
+    }
+}
+
+data class ConversationDetailDto(
+    val id: Long,
+    val message: String,
+    val userId: String,
+    val conversationTime: LocalDateTime,
     val files: List<String>,
     val replies: List<ReplyDto>
 ) {
@@ -21,12 +44,6 @@ data class ConversationDto(
             conversation.files.map { it.url },
             ReplyDto.listOf(conversation.replies)
         )
-
-    companion object {
-        fun listOf(conversations: List<Conversation>): List<ConversationDto> {
-            return conversations.map { ConversationDto(it) }
-        }
-    }
 }
 
 data class ReplyDto(
