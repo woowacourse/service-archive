@@ -1,5 +1,6 @@
 package io.github.woowacourse.archive.slack
 
+import io.github.woowacourse.archive.member.Member
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.context.annotation.Configuration
 import org.springframework.stereotype.Service
@@ -33,6 +34,10 @@ class SlackService(
 
     fun retrieve(oldest: String) =
         repository.retrieve(properties.userToken, properties.channel, oldest)
+
+    fun retrieveUser(): User {
+        return repository.retrieveUsers(properties.botToken)
+    }
 
     fun download(url: String, fileName: String): File {
         val inputStream = connect(url).getInputStream()

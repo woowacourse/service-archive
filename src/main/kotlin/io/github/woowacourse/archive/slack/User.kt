@@ -26,6 +26,9 @@ data class Member(
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class Profile(
+    @JsonProperty("real_name")
+    val realName: String,
+
     @JsonProperty("display_name")
     val displayName: String,
 

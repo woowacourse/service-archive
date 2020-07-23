@@ -20,6 +20,16 @@ create table reply (
     primary key (id)
 );
 
+create table member (
+    id bigint not null auto_increment,
+    created_date datetime not null,
+    updated_date datetime not null,
+    avatar longtext,
+    display_name varchar(255),
+    member_id varchar(255) not null,
+    primary key (id)
+);
+
 
 alter table reply
     add constraint fk_reply_conversation
