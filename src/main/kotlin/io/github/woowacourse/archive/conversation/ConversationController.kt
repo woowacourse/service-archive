@@ -26,8 +26,8 @@ class ConversationController(
     fun retrieve(
             @ModelAttribute conversationRequestDto: ConversationRequestDto
     ): ResponseEntity<List<ConversationDto>> {
-        val (id, message, size) = conversationRequestDto
-        val conversationDtos = ConversationDto.listOf(conversationService.retrieveSpecific(id, message, size))
+        val (conversationTime, message, size) = conversationRequestDto
+        val conversationDtos = ConversationDto.listOf(conversationService.retrieveSpecific(conversationTime, message, size))
         return ResponseEntity.ok(conversationDtos)
     }
 }

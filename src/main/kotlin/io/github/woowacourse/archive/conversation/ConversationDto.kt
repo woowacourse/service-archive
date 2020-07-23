@@ -1,5 +1,6 @@
 package io.github.woowacourse.archive.conversation
 
+import org.springframework.format.annotation.DateTimeFormat
 import java.time.LocalDateTime
 import java.time.LocalDateTime.now
 
@@ -52,7 +53,8 @@ data class ReplyDto(
 }
 
 data class ConversationRequestDto(
-        val localDateTime: LocalDateTime = now(),
+        @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+        val conversationTime: LocalDateTime = now(),
         val message: String = "",
         val size: Int
 )
