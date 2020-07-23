@@ -77,7 +77,7 @@ class ConversationService(
         return Reply(
             conversation,
             message.text,
-            message.user,
+            memberRepository.findByMemberId(message.user).displayName,
             toLocalDateTime(message.ts),
             fromSlackToS3(message.files)
         )
