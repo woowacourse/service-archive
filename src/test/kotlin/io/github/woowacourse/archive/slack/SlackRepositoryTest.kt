@@ -103,6 +103,8 @@ class SlackRepositoryTest : IntegrationTest() {
     fun `Slack User 리스트를 조회한다`() {
         val response = slackRepository.retrieveUsers(botToken)
 
+        assertThat(response.members[response.members.size/2].id).isNotNull()
+        assertThat(response.members[response.members.size/2].profile.displayName).isNotBlank()
         assertThat(response.exist()).isTrue()
     }
 
