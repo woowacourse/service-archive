@@ -2,6 +2,7 @@ package io.github.woowacourse.archive.conversation
 
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RestController
 
@@ -19,5 +20,14 @@ class ConversationController(
     fun archiveManually(): ResponseEntity<Unit> {
         conversationService.archive()
         return ResponseEntity.ok().build()
+    }
+
+    @GetMapping("/conversations/search")
+    fun retrieve(
+        @ModelAttribute conversationRequestDto: ConversationRequestDto
+    ): ResponseEntity<List<ConversationDto>> {
+        val (conversationTime, message, size) = conversationRequestDto
+        val conversationDtos = ConversationDto.listOf(conversationService.retrieveSpecific(conversationTime, message, size))
+        return ResponseEntity.ok(conversationDtos)
     }
 }

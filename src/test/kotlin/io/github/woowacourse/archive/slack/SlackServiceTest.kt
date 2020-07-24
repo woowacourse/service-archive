@@ -31,10 +31,10 @@ internal class SlackServiceTest : IntegrationTest() {
 
     private fun retrieveFileUrls(): List<String> {
         return slackService
-                .retrieve()
-                .conversations
-                .flatMap { conversation ->
-                    conversation.files.map { it.urlPrivate }
-                }
+            .retrieve()
+            .conversations
+            .flatMap { conversation ->
+                conversation.files.map { it.urlPrivate }
+            }
     }
 }

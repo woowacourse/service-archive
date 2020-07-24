@@ -12,9 +12,9 @@ class ConversationTest {
     @Test
     fun `대화 객체를 생성한다`() {
         val conversation = Conversation(
-                message,
-                userId,
-                conversationTime
+            message,
+            userId,
+            conversationTime
         )
 
         assertThat(conversation.message).isNotNull()
@@ -23,20 +23,20 @@ class ConversationTest {
     @Test
     fun `대화에 응답을 추가한다`() {
         val conversation = Conversation(
-                message,
-                userId,
-                conversationTime
+            message,
+            userId,
+            conversationTime
         )
         val text = "답변"
         val user = "USDLAAJBU"
         val ts = "1588828683.270200"
         conversation.add(
-                Reply(
-                        conversation,
-                        text,
-                        user,
-                        toLocalDateTime(ts)
-                )
+            Reply(
+                conversation,
+                text,
+                user,
+                toLocalDateTime(ts)
+            )
         )
 
         assertThat(conversation.replies.size).isEqualTo(1)

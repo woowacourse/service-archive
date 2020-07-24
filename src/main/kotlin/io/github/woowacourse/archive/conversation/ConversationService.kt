@@ -6,7 +6,10 @@ import io.github.woowacourse.archive.slack.DateTimeConverter.toLocalDateTime
 import io.github.woowacourse.archive.slack.Message
 import io.github.woowacourse.archive.slack.SlackService
 import mu.KotlinLogging
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
+import java.time.LocalDateTime
 
 const val INITIAL_INDEX = 1
 private val logger = KotlinLogging.logger { }
@@ -78,10 +81,15 @@ class ConversationService(
 
     private fun uploadToS3(downloadFiles: List<java.io.File>): List<File> {
         return downloadFiles
-                .map { File(s3Uploader.upload(it)) }
-                .toList()
+            .map { File(s3Uploader.upload(it)) }
+            .toList()
     }
 
     private fun downloadFromSlack(files: List<io.github.woowacourse.archive.slack.File>) =
-            files.map { slackService.download(it.urlPrivate, "${it.name}") }
+        files.map { slackService.download(it.urlPrivate, it.name) }
+
+    fun retrieveSpecific(conversationTime: LocalDateTime, message: String, size: Int): List<Conversation> {
+        val pageable: Pageable = PageRequest.of(0, size)
+        return repository.findByConversationTimeLessThanAndMessageContainingOrderByConversationTimeDesc(conversationTime, message, pageable).content
+    }
 }

@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 
 class ConversationServiceTest @Autowired constructor(
-        private val conversationService: ConversationService
+    private val conversationService: ConversationService
 ) : IntegrationTest() {
     @Test
     fun `슬랙 히스토리 저장 테스트`() {

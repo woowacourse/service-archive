@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import java.io.File
 
 internal class S3UploaderTest @Autowired constructor(
-        private val s3Uploader: S3Uploader
+    private val s3Uploader: S3Uploader
 ) : IntegrationTest() {
     @Autowired
     private lateinit var cloudProperties: CloudProperties

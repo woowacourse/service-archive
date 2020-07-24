@@ -1,6 +1,8 @@
 package io.github.woowacourse.archive.conversation
 
+import org.springframework.format.annotation.DateTimeFormat
 import java.time.LocalDateTime
+import java.time.LocalDateTime.now
 
 data class ConversationDto(
     val id: Long,
@@ -11,14 +13,14 @@ data class ConversationDto(
     val replies: List<ReplyDto>
 ) {
     constructor(conversation: Conversation) :
-            this(
-                conversation.id,
-                conversation.message,
-                conversation.userId,
-                conversation.conversationTime,
-                conversation.files.map { it.url },
-                ReplyDto.listOf(conversation.replies)
-            )
+        this(
+            conversation.id,
+            conversation.message,
+            conversation.userId,
+            conversation.conversationTime,
+            conversation.files.map { it.url },
+            ReplyDto.listOf(conversation.replies)
+        )
 
     companion object {
         fun listOf(conversations: List<Conversation>): List<ConversationDto> {
@@ -35,13 +37,13 @@ data class ReplyDto(
     val id: Long
 ) {
     constructor(reply: Reply) :
-            this(
-                reply.message,
-                reply.userId,
-                reply.replyTime,
-                reply.files.map { it.url },
-                reply.id
-            )
+        this(
+            reply.message,
+            reply.userId,
+            reply.replyTime,
+            reply.files.map { it.url },
+            reply.id
+        )
 
     companion object {
         fun listOf(replies: List<Reply>): List<ReplyDto> {
@@ -49,3 +51,10 @@ data class ReplyDto(
         }
     }
 }
+
+data class ConversationRequestDto(
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    val conversationTime: LocalDateTime = now(),
+    val message: String = "",
+    val size: Int
+)
