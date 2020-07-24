@@ -24,6 +24,8 @@ class ConversationService(
 
     fun retrieve(): List<Conversation> = repository.findAllByOrderByConversationTime()
 
+    fun retrieveBy(id: Long): Conversation = repository.findById(id).orElseThrow { throw NoSuchElementException() }
+
     private fun save(savedConversations: List<Conversation>): MutableList<Conversation> {
         if (savedConversations.isEmpty()) {
             return saveAll(slackService.retrieve())
