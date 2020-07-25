@@ -1,6 +1,5 @@
 package io.github.woowacourse.archive.slack
 
-import io.github.woowacourse.archive.member.Member
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.context.annotation.Configuration
 import org.springframework.stereotype.Service
@@ -48,7 +47,6 @@ class SlackService(
         while (inputStream.read(bytes).also { read = it } >= EOF) {
             outputStream.write(bytes, START_OFFSET, read)
         }
-
         return file
     }
 

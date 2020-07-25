@@ -1,13 +1,14 @@
 package io.github.woowacourse.archive.conversation
 
 import org.springframework.format.annotation.DateTimeFormat
+import io.github.woowacourse.archive.member.MemberDto
 import java.time.LocalDateTime
 import java.time.LocalDateTime.now
 
 data class ConversationDto(
     val id: Long,
     val message: String,
-    val userId: String,
+    val member: MemberDto,
     val conversationTime: LocalDateTime,
     val files: List<String>
 ) {
@@ -15,7 +16,7 @@ data class ConversationDto(
         this(
             conversation.id,
             conversation.message,
-            conversation.userId,
+            MemberDto(conversation.member),
             conversation.conversationTime,
             conversation.files.map { it.url }
         )
@@ -30,7 +31,7 @@ data class ConversationDto(
 data class ConversationDetailDto(
     val id: Long,
     val message: String,
-    val userId: String,
+    val member: MemberDto,
     val conversationTime: LocalDateTime,
     val files: List<String>,
     val replies: List<ReplyDto>
@@ -39,7 +40,7 @@ data class ConversationDetailDto(
         this(
             conversation.id,
             conversation.message,
-            conversation.userId,
+            MemberDto(conversation.member),
             conversation.conversationTime,
             conversation.files.map { it.url },
             ReplyDto.listOf(conversation.replies)
@@ -48,7 +49,7 @@ data class ConversationDetailDto(
 
 data class ReplyDto(
     val message: String,
-    val userId: String,
+    val member: MemberDto,
     val replyTime: LocalDateTime,
     val files: List<String>,
     val id: Long
@@ -56,7 +57,7 @@ data class ReplyDto(
     constructor(reply: Reply) :
         this(
             reply.message,
-            reply.userId,
+            MemberDto(reply.member),
             reply.replyTime,
             reply.files.map { it.url },
             reply.id

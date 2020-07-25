@@ -52,7 +52,7 @@ class ConversationService(
     private fun to(it: io.github.woowacourse.archive.slack.Conversation): Conversation {
         val conversation = Conversation(
             it.message,
-            findMemberOrId(it),
+            memberRepository.findByMemberId(it.user)!!,
             toLocalDateTime(it.ts),
             fromSlackToS3(it.files)
         )
@@ -83,7 +83,7 @@ class ConversationService(
         return Reply(
             conversation,
             message.text,
-            findMemberOrId(message),
+            memberRepository.findByMemberId(message.user)!!,
             toLocalDateTime(message.ts),
             fromSlackToS3(message.files)
         )
