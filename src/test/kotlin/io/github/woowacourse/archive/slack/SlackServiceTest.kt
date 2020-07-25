@@ -37,4 +37,13 @@ internal class SlackServiceTest : IntegrationTest() {
                 conversation.files.map { it.urlPrivate }
             }
     }
+
+    @Test
+    internal fun `사용자의 프로필 이미지를 다운로드한다`() {
+        val slackProfileImageUrl = "https://avatars.slack-edge.com/2020-01-17/900291967601_063326588d6eff8f814a_192.png"
+
+        val file = slackService.download(slackProfileImageUrl, "test_profile_image.png")
+        assertThat(file.exists()).isTrue()
+        file.delete()
+    }
 }

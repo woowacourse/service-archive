@@ -1,5 +1,7 @@
 package io.github.woowacourse.archive.conversation
 
+import io.github.woowacourse.archive.member.Member
+import io.github.woowacourse.archive.member.MemberRepository
 import io.github.woowacourse.archive.slack.DateTimeConverter.toLocalDateTime
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -12,13 +14,16 @@ import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 
 class ConversationRepositoryTest @Autowired constructor(
-    val conversationRepository: ConversationRepository
+        val conversationRepository: ConversationRepository,
+        val memberRepository: MemberRepository
 ) : IntegrationTest() {
 
     @Test
     fun `Reply 객체가 저장하는지 확인`() {
         conversation.add(assemble(messages[0]))
         conversation.add(assemble(messages[1]))
+
+        memberRepository.save(Member("USU9TR4HM", "닉네임","https://avatars.slack-edge.com/2020-01-17/900291967601_063326588d6eff8f814a_192.png"))
 
         val expected = conversationRepository.save(conversation)
         val actual = conversationRepository

@@ -1,5 +1,6 @@
 package io.github.woowacourse.archive.conversation
 
+import io.github.woowacourse.archive.member.Member
 import io.github.woowacourse.archive.slack.DateTimeConverter.toLocalDateTime
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -12,9 +13,9 @@ class ConversationTest {
     @Test
     fun `대화 객체를 생성한다`() {
         val conversation = Conversation(
-            message,
-            userId,
-            conversationTime
+                message,
+                Member(userId, "닉네임","https://avatars.slack-edge.com/2020-01-17/900291967601_063326588d6eff8f814a_192.png"),
+                conversationTime
         )
 
         assertThat(conversation.message).isNotNull()
@@ -23,20 +24,20 @@ class ConversationTest {
     @Test
     fun `대화에 응답을 추가한다`() {
         val conversation = Conversation(
-            message,
-            userId,
-            conversationTime
+                message,
+                Member(userId, "닉네임","https://avatars.slack-edge.com/2020-01-17/900291967601_063326588d6eff8f814a_192.png"),
+                conversationTime
         )
         val text = "답변"
         val user = "USDLAAJBU"
         val ts = "1588828683.270200"
         conversation.add(
-            Reply(
-                conversation,
-                text,
-                user,
-                toLocalDateTime(ts)
-            )
+                Reply(
+                        conversation,
+                        text,
+                        Member(user, "닉네임","https://avatars.slack-edge.com/2020-01-17/900291967601_063326588d6eff8f814a_192.png"),
+                        toLocalDateTime(ts)
+                )
         )
 
         assertThat(conversation.replies.size).isEqualTo(1)
