@@ -1,7 +1,6 @@
 package io.github.woowacourse.archive.conversation
 
 import io.github.woowacourse.archive.aws.S3Uploader
-import io.github.woowacourse.archive.member.Member
 import io.github.woowacourse.archive.member.MemberRepository
 import io.github.woowacourse.archive.slack.Conversations
 import io.github.woowacourse.archive.slack.DateTimeConverter.toLocalDateTime
@@ -43,26 +42,25 @@ class ConversationService(
         repository.saveAll(toList(conversations))
 
     private fun toList(conversations: Conversations): List<Conversation> {
+        val members = memberRepository.findAll()
+            .map { it.memberId to it.displayName }
+            .toMap()
+
         return conversations
             .conversations.asSequence()
-            .map { to(it) }
+            .map { to(it, members) }
             .toList()
     }
 
-    private fun to(it: io.github.woowacourse.archive.slack.Conversation): Conversation {
+    private fun to(it: io.github.woowacourse.archive.slack.Conversation, members: Map<String, String>): Conversation {
         val conversation = Conversation(
-            it.message,
+            convertUserIdToDisplayName(it.message, members),
             memberRepository.findByMemberId(it.user)!!,
             toLocalDateTime(it.ts),
             fromSlackToS3(it.files)
         )
-        conversation.addAll(assemble(conversation, it.thread.messages))
+        conversation.addAll(assemble(conversation, it.thread.messages, members))
         return conversation
-    }
-
-    private fun findMemberOrId(conversation: io.github.woowacourse.archive.slack.Conversation) : String {
-        val member: Member? =memberRepository.findByMemberId(conversation.user)
-        return member?.displayName ?: conversation.user
     }
 
     private fun fromSlackToS3(files: List<io.github.woowacourse.archive.slack.File>): List<File> {
@@ -71,27 +69,27 @@ class ConversationService(
         return uploadToS3(files)
     }
 
-    private fun assemble(conversation: Conversation, messages: List<Message>): MutableList<Reply> {
+    private fun assemble(conversation: Conversation, messages: List<Message>, members: Map<String, String>): MutableList<Reply> {
         return messages
             .subList(INITIAL_INDEX, messages.size)
             .asSequence()
-            .map { assemble(conversation, it) }
+            .map { assemble(conversation, it, members) }
             .toMutableList()
     }
 
-    private fun assemble(conversation: Conversation, message: Message): Reply {
+    private fun assemble(conversation: Conversation, message: Message, members: Map<String, String>): Reply {
         return Reply(
             conversation,
-            message.text,
+            convertUserIdToDisplayName(message.text, members),
             memberRepository.findByMemberId(message.user)!!,
             toLocalDateTime(message.ts),
             fromSlackToS3(message.files)
         )
     }
 
-    private fun findMemberOrId(message: Message) : String {
-        val member: Member? =memberRepository.findByMemberId(message.user)
-        return member?.displayName ?: message.user
+    private fun convertUserIdToDisplayName(message: String, members: Map<String, String>): String {
+        val regex = "<@(U[s|S]+)>".toRegex()
+        return regex.replace(message) { matchResult -> members.getOrDefault(matchResult.groupValues[1], matchResult.value) }
     }
 
     private fun uploadToS3(downloadFiles: List<java.io.File>): List<File> {
