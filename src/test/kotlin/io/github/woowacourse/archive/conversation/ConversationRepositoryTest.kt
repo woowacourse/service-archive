@@ -44,10 +44,12 @@ class ConversationRepositoryTest @Autowired constructor(
     @ParameterizedTest
     @MethodSource("createMessageAndResult")
     fun `특정 위치부터 개수만큼 조회`(message: String, size: Int, result: String) {
-        conversationRepository.save(Conversation("1", "", toLocalDateTime("1588828683.270200")))
-        conversationRepository.save(Conversation("2", "", toLocalDateTime("1588828683.270201")))
-        val pivot = conversationRepository.save(Conversation("3", "", toLocalDateTime("1588828683.270202")))
-        conversationRepository.save(Conversation("4", "", toLocalDateTime("1588828683.270203")))
+        val persistMember = memberRepository.save(Member("USU9TR4HM", "닉네임", "https://avatars.slack-edge.com/2020-01-17/900291967601_063326588d6eff8f814a_192.png"))
+
+        conversationRepository.save(Conversation("1", persistMember, toLocalDateTime("1588828683.270200")))
+        conversationRepository.save(Conversation("2", persistMember, toLocalDateTime("1588828683.270201")))
+        val pivot = conversationRepository.save(Conversation("3", persistMember, toLocalDateTime("1588828683.270202")))
+        conversationRepository.save(Conversation("4", persistMember, toLocalDateTime("1588828683.270203")))
         val pageable: Pageable = PageRequest.of(0, 2);
 
         val conversations = conversationRepository.findByConversationTimeLessThanAndMessageContainingOrderByConversationTimeDesc(pivot.conversationTime, message, pageable)
