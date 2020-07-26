@@ -2,6 +2,7 @@ package io.github.woowacourse.archive.conversation
 
 import com.fasterxml.jackson.annotation.JsonBackReference
 import com.fasterxml.jackson.annotation.JsonManagedReference
+import io.github.woowacourse.archive.member.Member
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
@@ -26,7 +27,10 @@ abstract class BaseAuditEntity protected constructor() {
 class Conversation(
     @Lob
     val message: String,
-    val userId: String,
+    @JsonBackReference
+    @ManyToOne
+    @JoinColumn(foreignKey = ForeignKey(name = "fk_conversation_member_id"))
+    val member: Member,
     @Column(unique = true)
     val conversationTime: LocalDateTime,
     @ElementCollection
@@ -56,7 +60,10 @@ class Reply(
     val conversation: Conversation,
     @Lob
     val message: String,
-    val userId: String,
+    @JsonBackReference
+    @ManyToOne
+    @JoinColumn(foreignKey = ForeignKey(name = "fk_reply_member_id"))
+    val member: Member,
     val replyTime: LocalDateTime,
     @ElementCollection
     @CollectionTable(name = "REPLY_FILE")

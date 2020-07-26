@@ -2,6 +2,7 @@ package io.github.woowacourse.archive.slack
 
 import io.github.woowacourse.archive.conversation.IntegrationTest
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import java.io.File
@@ -36,5 +37,15 @@ internal class SlackServiceTest : IntegrationTest() {
             .flatMap { conversation ->
                 conversation.files.map { it.urlPrivate }
             }
+    }
+
+    @Disabled
+    @Test
+    internal fun `사용자의 프로필 이미지를 다운로드한다`() {
+        val slackProfileImageUrl = "https://avatars.slack-edge.com/2020-01-17/900291967601_063326588d6eff8f814a_192.png"
+
+        val file = slackService.download(slackProfileImageUrl, "test_profile_image.png")
+        assertThat(file.exists()).isTrue()
+        file.delete()
     }
 }

@@ -18,5 +18,20 @@ data class User(
 data class Member(
     val id: String,
 
-    val name: String
+    val name: String,
+
+    @JsonProperty("profile")
+    val profile: Profile
+)
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+data class Profile(
+    @JsonProperty("real_name")
+    val realName: String,
+
+    @JsonProperty("display_name")
+    val displayName: String,
+
+    @JsonProperty("image_192")
+    val profileImage: String
 )

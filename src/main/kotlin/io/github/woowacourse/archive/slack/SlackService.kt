@@ -34,6 +34,10 @@ class SlackService(
     fun retrieve(oldest: String) =
         repository.retrieve(properties.userToken, properties.channel, oldest)
 
+    fun retrieveUser(): User {
+        return repository.retrieveUsers(properties.botToken)
+    }
+
     fun download(url: String, fileName: String): File {
         val inputStream = connect(url).getInputStream()
         val file = File(fileName)
@@ -43,7 +47,6 @@ class SlackService(
         while (inputStream.read(bytes).also { read = it } >= EOF) {
             outputStream.write(bytes, START_OFFSET, read)
         }
-
         return file
     }
 

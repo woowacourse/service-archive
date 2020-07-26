@@ -1,6 +1,8 @@
 package io.github.woowacourse.archive.conversation
 
 import io.github.woowacourse.archive.aws.S3Uploader
+import io.github.woowacourse.archive.member.Member
+import io.github.woowacourse.archive.member.MemberRepository
 import io.github.woowacourse.archive.slack.Conversations
 import io.github.woowacourse.archive.slack.DateTimeConverter.toLocalDateTime
 import io.github.woowacourse.archive.slack.Message
@@ -17,6 +19,7 @@ private val logger = KotlinLogging.logger { }
 @Service
 class ConversationService(
     private val repository: ConversationRepository,
+    private val memberRepository: MemberRepository,
     private val slackService: SlackService,
     private val s3Uploader: S3Uploader
 ) {
@@ -49,12 +52,17 @@ class ConversationService(
     private fun to(it: io.github.woowacourse.archive.slack.Conversation): Conversation {
         val conversation = Conversation(
             it.message,
-            it.user,
+            memberRepository.findByMemberId(it.user)!!,
             toLocalDateTime(it.ts),
             fromSlackToS3(it.files)
         )
         conversation.addAll(assemble(conversation, it.thread.messages))
         return conversation
+    }
+
+    private fun findMemberOrId(conversation: io.github.woowacourse.archive.slack.Conversation) : String {
+        val member: Member? =memberRepository.findByMemberId(conversation.user)
+        return member?.displayName ?: conversation.user
     }
 
     private fun fromSlackToS3(files: List<io.github.woowacourse.archive.slack.File>): List<File> {
@@ -75,10 +83,15 @@ class ConversationService(
         return Reply(
             conversation,
             message.text,
-            message.user,
+            memberRepository.findByMemberId(message.user)!!,
             toLocalDateTime(message.ts),
             fromSlackToS3(message.files)
         )
+    }
+
+    private fun findMemberOrId(message: Message) : String {
+        val member: Member? =memberRepository.findByMemberId(message.user)
+        return member?.displayName ?: message.user
     }
 
     private fun uploadToS3(downloadFiles: List<java.io.File>): List<File> {

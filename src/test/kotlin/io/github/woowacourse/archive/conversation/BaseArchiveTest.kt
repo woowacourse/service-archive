@@ -1,5 +1,6 @@
 package io.github.woowacourse.archive.conversation
 
+import io.github.woowacourse.archive.member.Member
 import io.github.woowacourse.archive.slack.DateTimeConverter.toLocalDateTime
 import io.github.woowacourse.archive.slack.Message
 import org.junit.jupiter.api.BeforeEach
@@ -19,9 +20,9 @@ abstract class BaseArchiveTest {
         val conversationTime = toLocalDateTime("1588828683.270200")
 
         conversation = Conversation(
-            message,
-            userId,
-            conversationTime
+                message,
+                Member(userId, "닉네임","https://avatars.slack-edge.com/2020-01-17/900291967601_063326588d6eff8f814a_192.png"),
+                conversationTime
         )
 
         messages.add(
@@ -42,10 +43,10 @@ abstract class BaseArchiveTest {
 
     fun assemble(message: Message): Reply {
         return Reply(
-            conversation,
-            message.text,
-            message.user,
-            toLocalDateTime(message.ts)
+                conversation,
+                message.text,
+                Member(message.user, "닉네임","https://avatars.slack-edge.com/2020-01-17/900291967601_063326588d6eff8f814a_192.png"),
+                toLocalDateTime(message.ts)
         )
     }
 }

@@ -1,9 +1,11 @@
 package io.github.woowacourse.archive.conversation
 
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 
+@Disabled
 class ConversationServiceTest @Autowired constructor(
     private val conversationService: ConversationService
 ) : IntegrationTest() {
