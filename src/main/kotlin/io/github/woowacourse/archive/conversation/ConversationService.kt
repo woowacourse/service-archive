@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 
 const val INITIAL_INDEX = 1
+const val FIRST_MATCH_INDEX = 1
+private val REGEX = "<@(U\\S+)>".toRegex()
 private val logger = KotlinLogging.logger { }
 
 @Service
@@ -81,15 +83,14 @@ class ConversationService(
         return Reply(
             conversation,
             convertUserIdToDisplayName(message.text, members),
-            memberRepository.findByMemberId(message.user)!!,
+            memberRepository.findByMemberId(message.user),
             toLocalDateTime(message.ts),
             fromSlackToS3(message.files)
         )
     }
 
     private fun convertUserIdToDisplayName(message: String, members: Map<String, String>): String {
-        val regex = "<@(U[s|S]+)>".toRegex()
-        return regex.replace(message) { matchResult -> members.getOrDefault(matchResult.groupValues[1], matchResult.value) }
+        return REGEX.replace(message) { matchResult -> "@${members.getOrDefault(matchResult.groupValues[FIRST_MATCH_INDEX], matchResult.value)}" }
     }
 
     private fun uploadToS3(downloadFiles: List<java.io.File>): List<File> {
