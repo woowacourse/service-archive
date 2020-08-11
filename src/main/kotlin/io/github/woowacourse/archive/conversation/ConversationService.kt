@@ -104,6 +104,6 @@ class ConversationService(
 
     fun retrieveSpecific(conversationTime: LocalDateTime, message: String, size: Int): List<Conversation> {
         val pageable: Pageable = PageRequest.of(0, size)
-        return repository.findByConversationTimeLessThanAndMessageContainingOrderByConversationTimeDesc(conversationTime, message, pageable).content
+        return repository.findByConversationTimeLessThanAndMemberDisplayNameContainingOrConversationTimeLessThanAndMessageContainingOrderByConversationTimeDesc(conversationTime, message, conversationTime, message, pageable).content
     }
 }

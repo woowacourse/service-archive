@@ -8,5 +8,5 @@ import java.time.LocalDateTime
 interface ConversationRepository : JpaRepository<Conversation, Long> {
     fun findAllByOrderByConversationTime(): List<Conversation>
 
-    fun findByConversationTimeLessThanAndMessageContainingOrderByConversationTimeDesc(conversationTime: LocalDateTime, message: String, pageable: Pageable): Page<Conversation>
+    fun findByConversationTimeLessThanAndMemberDisplayNameContainingOrConversationTimeLessThanAndMessageContainingOrderByConversationTimeDesc(conversationTime: LocalDateTime, message: String, conversationTime2: LocalDateTime, message2: String, pageable: Pageable): Page<Conversation>
 }
