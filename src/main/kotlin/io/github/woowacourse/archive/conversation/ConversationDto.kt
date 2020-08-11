@@ -10,7 +10,8 @@ data class ConversationDto(
     val message: String,
     val member: MemberDto,
     val conversationTime: LocalDateTime,
-    val files: List<String>
+    val files: List<String>,
+    val replyCount: Int
 ) {
     constructor(conversation: Conversation) :
         this(
@@ -18,7 +19,8 @@ data class ConversationDto(
             conversation.message,
             MemberDto(conversation.member),
             conversation.conversationTime,
-            conversation.files.map { it.url }
+            conversation.files.map { it.url },
+            conversation.replies.size
         )
 
     companion object {
