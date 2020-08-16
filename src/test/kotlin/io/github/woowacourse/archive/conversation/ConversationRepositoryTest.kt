@@ -28,8 +28,8 @@ class ConversationRepositoryTest @Autowired constructor(
 
         val expected = conversationRepository.save(conversation)
         val actual = conversationRepository
-                .findById(expected.id)
-                .orElseThrow { throw NoSuchElementException("객체를 찾을 수 없습니다.") }
+            .findById(expected.id)
+            .orElseThrow { throw NoSuchElementException("객체를 찾을 수 없습니다.") }
 
         assertThat(actual).isEqualTo(expected)
         assertThat(actual.replies.size).isEqualTo(messages.size)
@@ -53,19 +53,19 @@ class ConversationRepositoryTest @Autowired constructor(
         conversationRepository.save(Conversation("4", persistMember, toLocalDateTime("1588828683.270203")))
         val pageable: Pageable = PageRequest.of(0, 2);
 
-        val conversations = conversationRepository.findByConversationTimeLessThanAndMemberDisplayNameContainingOrConversationTimeLessThanAndMessageContainingOrderByConversationTimeDesc(pivot.conversationTime, message, pivot.conversationTime, message, pageable)
+        val conversations = conversationRepository.findByMemberNameOrMessageBeforeTimeOrderDesc(pivot.conversationTime, message, pageable)
 
         assertAll("conversation",
-                { assertThat(conversations.content).hasSize(size) },
-                { assertThat(conversations.content[0].message).isEqualTo(result) }
+            { assertThat(conversations.content).hasSize(size) },
+            { assertThat(conversations.content[0].message).isEqualTo(result) }
         )
     }
 
     companion object {
         @JvmStatic
         fun createMessageAndResult() = listOf(
-                Arguments.of("", 2, "2"),
-                Arguments.of("1", 1, "1")
+            Arguments.of("", 2, "2"),
+            Arguments.of("1", 1, "1")
         )
     }
 
@@ -80,11 +80,11 @@ class ConversationRepositoryTest @Autowired constructor(
         conversationRepository.save(Conversation("넷", persistMember2, toLocalDateTime("1588828683.875342")))
         val pageable: Pageable = PageRequest.of(0, 4)
 
-        val conversations = conversationRepository.findByConversationTimeLessThanAndMemberDisplayNameContainingOrConversationTimeLessThanAndMessageContainingOrderByConversationTimeDesc(LocalDateTime.now(), "닉네임1", LocalDateTime.now(), "닉네임1", pageable)
+        val conversations = conversationRepository.findByMemberNameOrMessageBeforeTimeOrderDesc(LocalDateTime.now(), "닉네임1", pageable)
 
         assertAll(
-                { assertThat(conversations.content).hasSize(2) },
-                { assertThat(conversations.content[0].message).isEqualTo(conversation3.message) }
+            { assertThat(conversations.content).hasSize(2) },
+            { assertThat(conversations.content[0].message).isEqualTo(conversation3.message) }
         )
     }
 }
