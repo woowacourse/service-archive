@@ -31,9 +31,9 @@ class MemberService(
         }
         val fileName: String =
             if (member.profile.profileImage.contains(".png")) "${member.id}.png" else "${member.id}.jpg"
-        val imageFile: File = slackService.download(member.profile.profileImage, fileName)
-        val avatarUrl: String = s3Uploader.upload(imageFile, "avatar/${displayName}")
-        return Member(member.id, displayName, avatarUrl)
+//        val imageFile: File = slackService.download(member.profile.profileImage, fileName)
+//        val avatarUrl: String = s3Uploader.upload(imageFile, "avatar/${displayName}")
+        return Member(member.id, displayName, "")
     }
 
     fun findAll(): List<Member> {

@@ -11,7 +11,6 @@ internal class MemberServiceTest @Autowired constructor(
 ) : IntegrationTest() {
 
     @Test
-    @Disabled
     fun `사용자 저장 테스트`() {
         memberService.save()
         assertThat(memberService.findAll()).isNotEmpty

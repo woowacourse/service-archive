@@ -2,10 +2,8 @@ package io.github.woowacourse.archive.conversation
 
 import io.github.woowacourse.archive.aws.S3Uploader
 import io.github.woowacourse.archive.member.MemberRepository
-import io.github.woowacourse.archive.slack.Conversations
+import io.github.woowacourse.archive.slack.*
 import io.github.woowacourse.archive.slack.DateTimeConverter.toLocalDateTime
-import io.github.woowacourse.archive.slack.Message
-import io.github.woowacourse.archive.slack.SlackService
 import mu.KotlinLogging
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
@@ -58,8 +56,8 @@ class ConversationService(
         val conversation = Conversation(
             convertUserIdToDisplayName(it.message, members),
             memberRepository.findByMemberId(it.user)!!,
-            toLocalDateTime(it.ts),
-            fromSlackToS3(it.files)
+            toLocalDateTime(it.ts)
+//            fromSlackToS3(it.files)
         )
         conversation.addAll(assemble(conversation, it.thread.messages, members))
         return conversation
@@ -84,8 +82,8 @@ class ConversationService(
             conversation,
             convertUserIdToDisplayName(message.text, members),
             memberRepository.findByMemberId(message.user),
-            toLocalDateTime(message.ts),
-            fromSlackToS3(message.files)
+            toLocalDateTime(message.ts)
+//            fromSlackToS3(message.files)
         )
     }
 

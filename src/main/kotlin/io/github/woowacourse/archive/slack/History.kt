@@ -58,9 +58,9 @@ data class Conversation(
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class File(
     val id: String,
-    val name: String,
+    val name: String = "",
     @JsonProperty("url_private")
-    val urlPrivate: String
+    val urlPrivate: String = ""
 ) {
     override fun toString(): String {
         return "id: $id, name: $name, url: $urlPrivate"
